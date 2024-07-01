@@ -300,6 +300,10 @@ by right-clicking on the terminal you want to share.
 DANGER: GRANTING READ/WRITE ACCESS TO YOUR TERMINAL ALLOWS OTHER PARTICIPANTS DANGEROUS ACCESS TO YOUR COMPUTER.
 </div>
 
+<div style="color: white; font-weight: bold; padding: 0.5rem; background:#990000; margin-top: 0.5rem; text-align: center">
+Noted
+</div>
+
 <!-- livebook:{"break_markdown":true} -->
 
 ![](images/live_share_session_running_tab.png)
