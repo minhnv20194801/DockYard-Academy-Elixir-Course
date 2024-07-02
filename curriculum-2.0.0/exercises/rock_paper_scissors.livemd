@@ -66,7 +66,17 @@ Then, return the winning choice of either `:rock`, `:paper`, or `:scissors` that
 Enter your solution below.
 
 ```elixir
+player_choice = Enum.random([:rock, :paper, :scissors])
 
+perfect_ai = fn player_choice ->
+  case player_choice do
+    :rock -> :paper
+    :paper -> :scissors
+    :scissors -> :rock
+  end
+end
+
+IO.puts("HAH! YOU FOOLS! YOUR #{player_choice} IS NO MATCH FOR MY #{perfect_ai.(player_choice)}")
 ```
 
 ## Create Two Player Rock Paper Scissors
@@ -119,7 +129,39 @@ Bind a `player1_choice` and `player2_choice` variable to `:rock`, `:paper`, or `
 Enter your solution below.
 
 ```elixir
+perfect_ai = fn player_choice ->
+  case player_choice do
+    :rock -> :paper
+    :paper -> :scissors
+    :scissors -> :rock
+  end
+end
 
+loser_ai = fn player_choice ->
+  case player_choice do
+    :rock -> :scissors
+    :paper -> :rock
+    :scissors -> :paper
+  end
+end
+
+player1_choice = Enum.random([:rock, :paper, :scissors])
+player2_choice = Enum.random([:rock, :paper, :scissors])
+
+match_result_calculator = fn player1_choice, player2_choice ->
+  player1_winning_choice = perfect_ai.(player2_choice)
+  player1_losing_choice = loser_ai.(player2_choice)
+
+  case player1_choice do
+    ^player1_winning_choice -> "Player 1 wins!"
+    ^player1_losing_choice -> "Player 2 wins!"
+    _ -> "Draw"
+  end
+end
+
+IO.puts(
+  "Player1: #{player1_choice}\nPlayer2: #{player2_choice}\nResult: #{match_result_calculator.(player1_choice, player2_choice)}"
+)
 ```
 
 ## Commit Your Progress
