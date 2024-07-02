@@ -84,7 +84,21 @@ naming_numbers.(1)
 Enter your solution below.
 
 ```elixir
-
+naming_numbers = fn digit ->
+  case digit do
+    0 -> "zero"
+    1 -> "one"
+    2 -> "two"
+    3 -> "three"
+    4 -> "four"
+    5 -> "five"
+    6 -> "six"
+    7 -> "seven"
+    8 -> "eight"
+    9 -> "nine"
+    _ -> "Not a valid single digit integer"
+  end
+end
 ```
 
 ## Numbering Names
@@ -181,7 +195,23 @@ flowchart
 </details>
 
 ```elixir
+numbering_name = fn number_name ->
+  case String.downcase(number_name) do
+    "zero" -> 0
+    "one" -> 1
+    "two" -> 2
+    "three" -> 3
+    "four" -> 4
+    "five" -> 5
+    "six" -> 6
+    "seven" -> 7
+    "eight" -> 8
+    "nine" -> 9
+    _ -> "Not a valid input"
+  end
+end
 
+numbering_name.("One")
 ```
 
 ## Commit Your Progress
