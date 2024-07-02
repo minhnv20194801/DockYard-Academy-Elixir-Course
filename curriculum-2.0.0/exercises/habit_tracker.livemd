@@ -65,7 +65,9 @@ small = 5
 Enter your solution below.
 
 ```elixir
-
+small = 5
+medium = 20
+large = 30
 ```
 
 ## Small, Medium, Large
@@ -95,7 +97,9 @@ small + medium + large
 Enter your answer in the code cell below.
 
 ```elixir
+initial_point = 0
 
+total = initial_point + large + medium + small
 ```
 
 ## Multiples
@@ -114,7 +118,9 @@ small * 10 + medium * 5 + large * 3
 Enter your answer below.
 
 ```elixir
+initial_point = 0
 
+total = initial_point + 10*small + 5*medium + 3*large
 ```
 
 ## Progress Bar
@@ -145,7 +151,10 @@ points = small + medium
 Enter your answer below.
 
 ```elixir
+goal = 40
+current_point = small + medium
 
+progress_percentage = current_point < goal && current_point/goal*100 || 100.0
 ```
 
 ## Penalties And Rewards
@@ -172,7 +181,10 @@ small * 1.6 * 3 + medium * 2 + large * 2 * 0.5
 Enter your answer below.
 
 ```elixir
+early_bonus = 1.6
+late_penalty = 0.5
 
+total_point = 3*small*early_bonus + 2*medium + 2*large*late_penalty
 ```
 
 ## Bonus: Add Your Own Feature
@@ -181,7 +193,15 @@ Add your own feature to the habit tracking app. Use comments to describe your fe
 how it would affect calculating the total score and/or the total percentage of completed habits.
 
 ```elixir
+# Add a progress bar to help keeping a better track at your habit
 
+Kino.Markdown.new(~s(
+  Goal: #{goal}\n
+  Current_points: #{current_point}\n
+  <div style=\"height: 20px; width: 100%; background-color: grey\">
+  <div style=\"height: 20px; width: #{progress_percentage}%; background-color: green; color: white;\">#{progress_percentage}%</div>
+  </div>
+))
 ```
 
 ## Commit Your Progress
