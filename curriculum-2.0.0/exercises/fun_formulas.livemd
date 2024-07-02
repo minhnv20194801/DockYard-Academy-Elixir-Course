@@ -67,7 +67,7 @@ total = 42
 Enter your solution below.
 
 ```elixir
-
+(12 / 42) * 100
 ```
 
 ## Rocket Ship
@@ -93,7 +93,12 @@ mass * acceleration
 Enter your solution below.
 
 ```elixir
+# mass = IO.gets("Please enter the spaceship mass:")
+mass = 10
+# acceleration = IO.gets("Please enter the spaceship acceleration:")
+acceleration = 50
 
+force = mass * acceleration
 ```
 
 ## What Do You Tip?
@@ -117,7 +122,12 @@ initial_cost * tip_percent
 Enter your solution below.
 
 ```elixir
+# initial_cost = IO.gets("How much do you have to pay for the food?")
+initial_cost = 20
+# tip_percent = IO.gets("How much do you want to tip? (between 0.0 to 100.0 in percentage)")
+tip_percent = 15
 
+total_cost = initial_cost + initial_cost/100*tip_percent
 ```
 
 ## Pythagorean Theorum
@@ -141,7 +151,13 @@ a ** 2 + b ** 2
 Enter your solution below.
 
 ```elixir
+a = 4
+b = 10
 
+c = a**2 + b**2
+IO.puts("The length of the hypotenuse of a right triangle that have the length of one side is #{a}cm\nand the length of the other side is #{b}cm is #{:math.sqrt(c)}cm.")
+
+c
 ```
 
 ## Bonus: Square Root
@@ -161,7 +177,9 @@ c_squared = 116
 Enter your solution below.
 
 ```elixir
+c_squared = 116
 
+c = :math.sqrt(c_squared)
 ```
 
 ## Commit Your Progress
