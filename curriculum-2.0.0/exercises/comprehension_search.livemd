@@ -126,11 +126,24 @@ end
 ```elixir
 defmodule Products do
   def all_items do
+    for _count <- 1..300 do
+      name = Enum.random(["computer", "phone", "table"])
+      price = Enum.random(1..100)
+      %{name: name, price: price}
+    end
   end
 
-  def search(items, filters) do
+  def search(items, filters \\ []) do
+    for item <- items,
+        item.price >= Keyword.get(filters, :min, 1),
+        item.price <= Keyword.get(filters, :max, 300),
+        item.name == Keyword.get(filters, :name, item.name) do
+      item
+    end
   end
 end
+
+Products.search(Products.all_items(), [min: 10, max: 10])
 ```
 
 ## Commit Your Progress
