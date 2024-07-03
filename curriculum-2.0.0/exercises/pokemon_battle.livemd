@@ -125,9 +125,26 @@ defmodule Pokemon do
       iex> Pokemon.attack(attacker, defender)
       %Pokemon{name: "Bulbasaur", type: :grass, health: 10.0, attack: 5, speed: 20}
   """
-  defstruct []
+  @type_multiplier 2
+  
+  defstruct [:name, :type, :speed, health: 20.0, attack: 5]
 
   def attack(attacker, defender) do
+    damage =
+      attacker.attack *
+        ((is_super_effective?(attacker.type, defender.type) && @type_multiplier) || 1) /
+        ((is_super_effective?(defender.type, attacker.type) && @type_multiplier) || 1)
+
+    %{defender | health: max(0, defender.health - damage)}
+  end
+
+  defp is_super_effective?(type1, type2) do
+    case {type1, type2} do
+      {:fire, :grass} -> true
+      {:grass, :water} -> true
+      {:water, :fire} -> true
+      _ -> false
+    end
   end
 end
 ```
@@ -135,7 +152,11 @@ end
 Consider using the following Elixir cell to test your solution.
 
 ```elixir
+attacker = %Pokemon{name: "Charmander", type: :fire, health: 20.0, attack: 5, speed: 20}
+defender = %Pokemon{name: "Bulbasaur", type: :grass, health: 20.0, attack: 5, speed: 20}
 
+# Applies 5 * 2 Damage. Original Health: 20.0, New Health: 10.0.
+Pokemon.attack(attacker, defender)
 ```
 
 ### Pokemon Instances
@@ -186,7 +207,9 @@ Pokemon.attack(charmander, bulbasaur)
 Enter your solution below.
 
 ```elixir
-
+charmander = %Pokemon{name: "Charmander", type: :fire, health: 20.0, attack: 5, speed: 20}
+bulbasaur = %Pokemon{name: "Bulbasaur", type: :grass, health: 20.0, attack: 5, speed: 20}
+squirtle = %Pokemon{name: "Squirtle", type: :water, health: 20.0, attack: 5, speed: 20}
 ```
 
 ## Commit Your Progress
