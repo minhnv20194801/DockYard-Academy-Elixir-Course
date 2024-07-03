@@ -120,7 +120,7 @@ end
 Call the `MutliParamExample.call/3` function with different arguments.
 
 ```elixir
-
+MultiParamExample.call("Param 1", "Param 2", "Param 3")
 ```
 
 ## Internal Module Functions
@@ -318,7 +318,11 @@ end
 Enter your solution below.
 
 ```elixir
-
+defmodule Languages.French do
+  def greeting do
+    "Bonjour"
+  end
+end
 ```
 
 ### Nested Modules
@@ -516,7 +520,36 @@ end
 </details>
 
 ```elixir
+defmodule Math do
+  @moduledoc """
+  Math
+  A module for doing addition of 2 or 3 integers
+  """
 
+  @doc """
+  add/2 take two integers as parameters to return the addition of the two integers
+
+  ## Examples
+  
+    iex> Math.add(2, 3)
+    5
+  """
+  def add(a, b) do
+    a + b
+  end
+
+  @doc """
+  add/3 take three integers as parameters to return the addition of the three integers
+
+  ## Examples
+  
+    iex> Math.add(2, 3, 5)
+    10
+  """
+  def add(a, b, c) do
+    a + b + c
+  end
+end
 ```
 
 ## Default Arguments
@@ -583,7 +616,13 @@ Greeting.hello("Andrew")
 ```
 
 ```elixir
+defmodule Greeting do
+  def hello(name \\ "Andrew Tate") do
+    "Hello #{name}!"
+  end
+end
 
+Greeting.hello()
 ```
 
 ## Documentation
@@ -668,7 +707,7 @@ defmodule DoctestFailure do
     "expected return value"
   """
   def test do
-    "actual return value"
+    "expected return value"
   end
 end
 ```
@@ -696,25 +735,25 @@ If this is the case, you either have to fix your code, or remove/comment the cra
 Uncomment the following code and evaluate the cell to see an example. Re-comment your code to avoid crashing the livebook as you continue with the lesson.
 
 ```elixir
-# defmodule DoctestCrash Do
-# @moduledoc """
-# DoctestCrash
+defmodule DoctestCrash do
+  @moduledoc """
+  DoctestCrash
 
-# Explains Doctest Crashes With Examples
-# """
+  Explains Doctest Crashes With Examples
+  """
 
-# @doc """
-# Purposely Crashes Doctest Using Invalid Pattern Matching
+  @doc """
+  Purposely Crashes Doctest Using Invalid Pattern Matching
 
-# ## Examples
+  ## Examples
 
-# iex> {} = DoctestCrash.crash()
-# "2"
-# """
-# def crash do
-
-# end
-# end
+  iex> DoctestCrash.crash()
+  "2"
+  """
+  def crash do
+    "2"
+  end
+end
 ```
 
 ### Your Turn
