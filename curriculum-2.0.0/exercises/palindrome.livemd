@@ -86,6 +86,13 @@ defmodule Palindrome do
     false
   """
   def palindrome?(string) do
+    length = String.length(string)
+    string_list = String.split(string, "", trim: true)
+    string_list_with_index = Enum.with_index(string_list)
+
+    Enum.all?(string_list_with_index, fn {char, index} ->
+      char == Enum.at(string_list, length - index - 1)
+    end)
   end
 end
 ```
