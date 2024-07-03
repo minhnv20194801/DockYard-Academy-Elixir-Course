@@ -87,7 +87,34 @@ flowchart
 Enter your solution below.
 
 ```elixir
+defmodule Solution do
+  @doc """
+  solve
 
+  ## Examples
+  iex> Solution.solve([1, 2, 4, 2, 7, 8, 0, 4, 5, 6])
+  ["one", "two", "four", "two", "seven", "eight", "zero", "four", "five", "six"]
+  """
+  def solve(digit_list) do
+    Enum.map(digit_list, &digit_to_numberstr/1)
+  end
+
+  defp digit_to_numberstr(digit) do
+    case digit do
+      0 -> "zero"
+      1 -> "one"
+      2 -> "two"
+      3 -> "three"
+      4 -> "four"
+      5 -> "five"
+      6 -> "six"
+      7 -> "seven"
+      8 -> "eight"
+      9 -> "nine"
+      _ -> "invalid digit"
+    end
+  end
+end
 ```
 
 ## Commit Your Progress
