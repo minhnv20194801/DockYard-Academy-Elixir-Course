@@ -83,6 +83,18 @@ defmodule Anagram do
     true
   """
   def anagram?(word, possible_anagram) do
+    Enum.reduce(String.split(word, "", trim: true), %{}, fn char, acc ->
+      Map.put_new(acc, char, 0)
+      |> Map.update!(char, fn _value ->
+        Map.get(acc, char, 0) + 1
+      end)
+    end) ==
+      Enum.reduce(String.split(possible_anagram, "", trim: true), %{}, fn char, acc ->
+        Map.put_new(acc, char, 0)
+        |> Map.update!(char, fn _value ->
+          Map.get(acc, char, 0) + 1
+        end)
+      end)
   end
 
   @doc """
@@ -100,6 +112,10 @@ defmodule Anagram do
     []
   """
   def filter_anagrams(word_list, anagram) do
+    word_list
+    |> Enum.filter(fn word ->
+      anagram?(word, anagram)
+    end)
   end
 end
 ```
@@ -129,6 +145,7 @@ defmodule AnagramSolver do
     ["abc", "acb", "bac", "bca", "cab", "cba"]
   """
   def solve(string) do
+    
   end
 end
 ```
