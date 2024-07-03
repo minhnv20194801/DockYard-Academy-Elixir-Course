@@ -82,6 +82,11 @@ defmodule Measurements do
     [10, -10, 30]
   """
   def increments(measurements) do
+    [head | measurements] = measurements
+    {result, _last_measurement} = Enum.map_reduce(measurements, head, fn measurement, acc ->
+      {measurement - acc, measurement}
+    end)
+    result
   end
 
   @doc """
@@ -100,6 +105,12 @@ defmodule Measurements do
     1
   """
   def increased(measurements) do
+    Enum.reduce(increments(measurements), 0, fn increment, acc ->
+      cond do
+        increment > 0 -> acc + 1
+        true -> acc
+      end
+    end)
   end
 
   @doc """
@@ -115,6 +126,12 @@ defmodule Measurements do
     40
   """
   def increased_by(measurements) do
+    Enum.reduce(increments(measurements), 0, fn increment, acc ->
+      cond do
+        increment > 0 -> acc + increment
+        true -> acc
+      end
+    end)
   end
 
   @doc """
@@ -130,6 +147,9 @@ defmodule Measurements do
     6.0
   """
   def average(measurements) do
+    Enum.reduce(measurements, 0, fn measurement, acc ->
+      acc + measurement
+    end) / Enum.count(measurements)
   end
 end
 ```
