@@ -153,16 +153,28 @@ defmodule Rollable do
 
     iex> Rollable.replace("99d20")
     "[99d20](https://www.google.com/search?q=roll+99d20)"
-    
+
     iex> Rollable.replace("Ice Shard: deal 12d4 ice damage.")
     "Ice Shard: deal [12d4](https://www.google.com/search?q=roll+12d4) ice damage."
   """
   def replace(string) do
+    Regex.replace(~r/\d+d{1}\d+/, string, fn match ->
+      "[#{match}](https://www.google.com/search?q=roll+#{match})"
+    end)
   end
 
   def roll(string) do
+    Regex.replace(~r/\d+d{1}\d+/, string, fn match ->
+      [number_of_roll_str, dice_type_str] = String.split(match, "d")
+
+      Integer.to_string(
+        String.to_integer(number_of_roll_str) * Enum.random(1..String.to_integer(dice_type_str))
+      )
+    end)
   end
 end
+
+Rollable.roll("Ice Shard: deal 12d4 ice damage and 6d6 fire damage.")
 ```
 
 ## Commit Your Progress
