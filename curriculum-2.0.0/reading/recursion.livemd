@@ -82,7 +82,7 @@ flowchart LR
 
 Computerphile explains recursion in excellent detail.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=Mv9NEXX1VHc\")","title":"Computerphile: Recursion"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9TXY5TkVYWDFWSGNcIikiLCJ0aXRsZSI6IkNvbXB1dGVycGhpbGU6IFJlY3Vyc2lvbiJ9","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=Mv9NEXX1VHc")
@@ -153,8 +153,8 @@ You'll notice the **Process** memory consumption will increase, and eventually, 
 You may need to click the **Connect** button to reconnect the Elixir runtime.
 
 ```elixir
-# defmodule Body Do
-#   def recursion([head | tail]) Do
+# defmodule Body do
+#   def recursion([head | tail]) do
 #     recursion(tail ++ tail) ++ [head]
 #   end
 # end
@@ -260,7 +260,19 @@ end
 
 ```elixir
 defmodule CountDown do
+  def count(count_number) do
+    cond do
+      count_number <= 0 ->
+        IO.puts(count_number)
+
+      true ->
+        IO.puts(count_number)
+        count(count_number - 1)
+    end
+  end
 end
+
+CountDown.count(5)
 ```
 
 ### Your Turn
@@ -323,7 +335,23 @@ end
 
 ```elixir
 defmodule CountBetween do
+  def count(start, finish) do
+    cond do
+      start == finish ->
+        IO.puts(start)
+
+      start > finish ->
+        IO.puts(start)
+        count(start - 1, finish)
+
+      start < finish ->
+        IO.puts(start)
+        count(start + 1, finish)
+    end
+  end
 end
+
+CountBetween.count(2, 5)
 ```
 
 ## Commit Your Progress
