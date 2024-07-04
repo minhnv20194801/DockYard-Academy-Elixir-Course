@@ -1,8 +1,13 @@
 defmodule Games.GuessingGame do
   def play do
-    answer = Enum.random(1..10)
+    answer = Integer.to_string(Enum.random(1..10)) <> "\n"
+    guess = IO.gets("Guess a number between 1 and 10:")
 
-    (IO.gets("Guess a number between 1 and 10:") == Integer.to_string(answer) <> "\n" &&
-       "You win!") || "Incorrect!"
+    cond do
+      guess == answer -> "You win!"
+      true ->
+        IO.puts("Incorrect!")
+        play()
+    end
   end
 end
