@@ -105,6 +105,8 @@ defmodule Email do
     false
   """
   def valid?(email) do
+    ~r/\w+\@{1}\w+\.{1}\w+/
+    |> Regex.match?(email)
   end
 end
 ```
