@@ -101,7 +101,16 @@ defmodule Fibonacci do
     iex> Fibonacci.of(20)
     6765
   """
-  def of(n) do
+  def of(0) do
+    0
+  end
+
+  def of(1) do
+    1
+  end
+
+  def of(n) when n > 1 do
+    of(n-1) + of(n-2)
   end
 end
 ```
