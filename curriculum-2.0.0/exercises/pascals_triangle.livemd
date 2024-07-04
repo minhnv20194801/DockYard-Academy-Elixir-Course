@@ -173,7 +173,27 @@ defmodule Pascal do
       iex> Pascal.of(5)
       [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]
   """
+  def of(1) do
+    [[1]]
+  end
+
+  def of(2) do
+    [[1], [1, 1]]
+  end
+
   def of(n) do
+    previous_triangle = of(n - 1)
+    last_row = Enum.at(previous_triangle, -1)
+
+    new_row = Enum.map(0..n-1, fn index ->
+      cond do
+        index == 0 -> 1
+        index == n-1 -> 1
+        true -> Enum.at(last_row, index) + Enum.at(last_row, index - 1)
+      end
+    end)
+
+    previous_triangle ++ [new_row]
   end
 end
 ```
