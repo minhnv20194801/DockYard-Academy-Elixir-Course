@@ -107,6 +107,12 @@ defmodule CaesarCypher do
     "ifmmp"
   """
   def encode(string) do
+    string
+    |> String.to_charlist()
+    |> Enum.map(fn charlist ->
+      rem(rem((charlist + 1), ?a), ?z - ?a + 1) + ?a
+    end)
+    |> List.to_string()
   end
 
   @doc """
@@ -130,6 +136,12 @@ defmodule CaesarCypher do
     "ifmmp"
   """
   def encode(string, key) do
+    string
+    |> String.to_charlist()
+    |> Enum.map(fn charlist ->
+      rem(rem((charlist + key), ?a), ?z - ?a + 1) + ?a
+    end)
+    |> List.to_string()
   end
 end
 ```
