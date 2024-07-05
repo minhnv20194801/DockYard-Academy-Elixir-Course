@@ -79,6 +79,8 @@ defmodule TodoList do
       []
   """
   def list do
+    File.stream!("todo.txt")
+    |> Enum.to_list()
   end
 
   @doc """
@@ -92,6 +94,8 @@ defmodule TodoList do
       ["task 2", "task 1"]
   """
   def add(item) do
+    new_content = [item <> "\n" | list()]
+    File.write!("todo.txt", new_content)
   end
 
   @doc """
@@ -105,6 +109,12 @@ defmodule TodoList do
       ["task 2", "task 1"]
   """
   def complete(item) do
+    new_content =
+      Enum.filter(list(), fn each ->
+        each != item <> "\n"
+      end)
+
+    File.write!("todo.txt", new_content)
   end
 end
 ```
