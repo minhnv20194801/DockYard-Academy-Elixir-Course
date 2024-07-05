@@ -83,9 +83,19 @@ end
 
 ```elixir
 defmodule Metric do
-  def convert(from, to) do
+  def convert({from_unit, value} = _from, to) do
+    %{^to => divisor, ^from_unit => multiplier} = %{
+      millimeter: 0.001,
+      centimeter: 0.01,
+      meter: 1.0,
+      kilometer: 1000.0
+    }
+
+    value * multiplier / divisor
   end
 end
+
+Metric.convert({:centimeter, 100.0}, :meter)
 ```
 
 ## Commit Your Progress
