@@ -107,7 +107,7 @@ The same is true if we manually exit a process using [Process.exit/2](https://he
 
 If you would like to learn more about fault taulerance and error handling, Joe Armstrong created an incredible video on the subject.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=ZOsvgwOR6G0&ab_channel=KentComputing\")","title":"Erlang Master Class 2: Video 3 - Handling errors"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9Wk9zdmd3T1I2RzAmYWJfY2hhbm5lbD1LZW50Q29tcHV0aW5nXCIpIiwidGl0bGUiOiJFcmxhbmcgTWFzdGVyIENsYXNzIDI6IFZpZGVvIDMgLSBIYW5kbGluZyBlcnJvcnMifQ","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=ZOsvgwOR6G0&ab_channel=KentComputing")
@@ -438,7 +438,7 @@ So the timeline of crashes would be:
 * 9 seconds: `Bomb1` crashes (`Bomb2` restarted)
 
 ```elixir
-# {:ok, Supervisor_pid} = Supervisor.start_link(children, Strategy: :rest_for_one, Max_restarts: 5)
+# {:ok, supervisor_pid} = Supervisor.start_link(children, strategy: :rest_for_one, max_restarts: 5)
 ```
 
 ### Your Turn
@@ -446,7 +446,33 @@ So the timeline of crashes would be:
 Start **four** `Bomb` processes under a supervisor with different bomb times. Try each restart strategy `:one_for_one`, `one_for_all`, and `:rest_for_one`. Predict the crash timeline then evaluate your code. Did the result match your prediction?
 
 ```elixir
+children = [
+  %{
+    id: :bomb1,
+    start: {Bomb, :start_link, [[name: "Bomb 1", bomb_time: 7000]]}
+  },
+  %{
+    id: :bomb2,
+    start: {Bomb, :start_link, [[name: "Bomb 2", bomb_time: 4000]]}
+  },
+  %{
+    id: :bomb3,
+    start: {Bomb, :start_link, [[name: "Bomb 3", bomb_time: 5000]]}
+  },
+  %{
+    id: :bomb4,
+    start: {Bomb, :start_link, [[name: "Bomb 4", bomb_time: 3000]]}
+  }
+]
 
+# bomb4 3s -> bomb2 4s -> bomb3 5s -> bomb4 6s -> bomb1 7s
+# {:ok, supervisor_pid} = Supervisor.start_link(children, strategy: :one_for_one, max_restarts: 5)
+
+# bomb4 3s -> bomb4 6s -> bomb4 9s -> bomb4 12s -> bomb4 15s
+# {:ok, supervisor_pid} = Supervisor.start_link(children, strategy: :one_for_all, max_restarts: 5)
+
+# bomb4 3s -> bomb2 4s -> bomb1 7s -> bomb4 7s -> bomb2 8s
+# {:ok, supervisor_pid} = Supervisor.start_link(children, strategy: :rest_for_one, max_restarts: 5)
 ```
 
 ## Syntax Sugar
