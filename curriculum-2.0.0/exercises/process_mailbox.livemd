@@ -137,8 +137,31 @@ defmodule Mailbox do
       ...>  message -> message 
       ...> end
       "Hello!"
+
+      iex> mailbox_process = spawn(fn -> Mailbox.loop() end)
+      iex> send(mailbox_process, {:read, self()})
+      iex> receive do
+      ...>  message -> message 
+      ...> end
+      :empty
   """
   def loop(state \\ []) do
+    receive do
+      {:send, payload} ->
+        loop([payload | state])
+
+      {:read, pid} ->
+        case state do
+          [] ->
+            send(pid, :empty)
+            loop(state)
+
+          _ ->
+            [head | tail] = state
+            send(pid, head)
+            loop(tail)
+        end
+    end
   end
 end
 ```
