@@ -9,10 +9,18 @@ defmodule Games.RockPaperScissors do
 
     winner_choice = winning_choice(ai_choice)
     loser_choice = losing_choice(ai_choice)
+
     case player_choice do
-      ^winner_choice -> IO.puts("You win! #{player_choice} beats #{ai_choice}.")
-      ^loser_choice -> IO.puts("You lose! #{ai_choice} beats #{player_choice}.")
-      _ -> IO.puts("It's a tie!")
+      ^winner_choice ->
+        IO.puts("You win! #{player_choice} beats #{ai_choice}.")
+        IO.puts("You have earned 10 points")
+        Games.Score.add_points(10)
+
+      ^loser_choice ->
+        IO.puts("You lose! #{ai_choice} beats #{player_choice}.")
+
+      _ ->
+        IO.puts("It's a tie!")
     end
   end
 

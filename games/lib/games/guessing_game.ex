@@ -20,6 +20,8 @@ defmodule Games.GuessingGame do
     cond do
       guess == answer ->
         IO.puts("You win!")
+        IO.puts("You have earned 5 points")
+        Games.Score.add_points(5)
 
       guess > answer ->
         IO.puts("Too High!")

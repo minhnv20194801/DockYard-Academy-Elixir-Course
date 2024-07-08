@@ -17,6 +17,7 @@ defmodule Games do
   end
 
   def main(_args) do
+    Games.ScoreTracker.start_link()
     play()
   end
 
@@ -29,6 +30,7 @@ defmodule Games do
     3. Wordle
 
     enter "stop" to exit
+    enter "score" to view your current score
     ===========================================
     """)
     |> String.trim("\n")
@@ -48,6 +50,17 @@ defmodule Games do
 
       "stop" ->
         IO.puts("Thank you for playing! Hope you have a great time!")
+
+      "score" ->
+        IO.puts("""
+
+        ===========================================
+        Your score is #{Games.Score.current_score()}
+        ===========================================
+
+        """)
+
+        play()
 
       _ ->
         play()

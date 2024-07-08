@@ -31,6 +31,8 @@ defmodule Games.Wordle do
 
     if feedback(answer, guess) == [:green, :green, :green, :green, :green] do
       IO.puts("You won! The word was #{answer}")
+      IO.puts("You have earned 25 points")
+      Games.Score.add_points(25)
     else
       IO.puts(Enum.join(feedback(answer, guess), " "))
       play(answer, attempt_count - 1)
