@@ -5,7 +5,9 @@ Mix.install([
   {:jason, "~> 1.4"},
   {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
-  {:hidden_cell, github: "brooklinjazz/hidden_cell"}
+  {:hidden_cell, github: "brooklinjazz/hidden_cell"},
+  {:kino_db, "~> 0.2.8"},
+  {:postgrex, ">= 0.0.0"}
 ])
 ```
 
@@ -44,6 +46,20 @@ $ sudo -i -u postgres
 
 ## PostgreSQL
 
+<!-- livebook:{"attrs":"eyJjYWNlcnRmaWxlIjoiIiwiZGF0YWJhc2UiOiJkcmlsbHMiLCJob3N0bmFtZSI6ImxvY2FsaG9zdCIsInBhc3N3b3JkX3NlY3JldCI6IlBPU1RHUkVTIiwicG9ydCI6NTQzMiwidHlwZSI6InBvc3RncmVzIiwidXNlX2lwdjYiOmZhbHNlLCJ1c2Vfc3NsIjpmYWxzZSwidXNlcm5hbWUiOiJwb3N0Z3JlcyIsInZhcmlhYmxlIjoiY29ubiJ9","chunks":null,"kind":"Elixir.KinoDB.ConnectionCell","livebook_object":"smart_cell"} -->
+
+```elixir
+opts = [
+  hostname: "localhost",
+  port: 5432,
+  username: "postgres",
+  password: System.fetch_env!("LB_POSTGRES"),
+  database: "drills"
+]
+
+{:ok, conn} = Kino.start_child({Postgrex, opts})
+```
+
 From the command line, create a `drills` PostgreSQL Database.
 
 <details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
@@ -55,7 +71,11 @@ createdb drills
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6Ii0tIENSRUFURSBEQVRBQkFTRSBkcmlsbHM7IiwicmVzdWx0X3ZhcmlhYmxlIjoicmVzdWx0IiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result = Postgrex.query!(conn, "-- CREATE DATABASE drills;", [])
+```
 
 From the command line, open the PostgreSQL prompt.
 
@@ -67,6 +87,10 @@ psql
 ```
 
 </details>
+
+<!-- livebook:{"break_markdown":true} -->
+
+psql
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -83,6 +107,10 @@ From the PostgreSQL prompt, view your list of databases.
 
 <!-- livebook:{"break_markdown":true} -->
 
+\l
+
+<!-- livebook:{"break_markdown":true} -->
+
 From the PostgreSQL prompt, connect to your `drills` database.
 
 <details style="background-color: lightgreen; padding: 1rem; margin: 1rem 0;">
@@ -93,6 +121,10 @@ From the PostgreSQL prompt, connect to your `drills` database.
 ```
 
 </details>
+
+<!-- livebook:{"break_markdown":true} -->
+
+\c drills
 
 ## SQL
 
@@ -112,7 +144,22 @@ CREATE TABLE authors (
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6IkNSRUFURSBUQUJMRSBhdXRob3JzIChcbiAgSUQgaW50ZWdlciBOT1QgTlVMTCxcbiAgTkFNRSB2YXJjaGFyKDI1NSkgTk9UIE5VTEwsXG4gIHByaW1hcnkga2V5IChJRClcbikiLCJyZXN1bHRfdmFyaWFibGUiOiJyZXN1bHQyIiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result2 =
+  Postgrex.query!(
+    conn,
+    """
+    CREATE TABLE authors (
+      ID integer NOT NULL,
+      NAME varchar(255) NOT NULL,
+      primary key (ID)
+    )
+    """,
+    []
+  )
+```
 
 From your PostgreSQL prompt, create a `books` table. `books` should have a `TITLE` field up to `30` characters, and a `CONTENT` field of unlimited length. Both fields should be `NOT NULL`.
 
@@ -134,7 +181,23 @@ CREATE TABLE books (
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6IkNSRUFURSBUQUJMRSBib29rcyAoXG4gIElEIElOVEVHRVIgUFJJTUFSWSBLRVksXG4gIFRJVExFIFZBUkNIQVIoMzApIE5PVCBOVUxMLFxuICBDT05URU5UIFRFWFQgTk9UIE5VTEwsXG4gIEFVVEhPUklEIElOVEVHRVIgUkVGRVJFTkNFUyBhdXRob3JzXG4pIiwicmVzdWx0X3ZhcmlhYmxlIjoicmVzdWx0MyIsInRpbWVvdXQiOm51bGx9","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result3 =
+  Postgrex.query!(
+    conn,
+    """
+    CREATE TABLE books (
+      ID INTEGER PRIMARY KEY,
+      TITLE VARCHAR(30) NOT NULL,
+      CONTENT TEXT NOT NULL,
+      AUTHORID INTEGER REFERENCES authors
+    )
+    """,
+    []
+  )
+```
 
 From the PostgreSQL prompt, view both of your tables.
 
@@ -147,7 +210,17 @@ From the PostgreSQL prompt, view both of your tables.
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6InNlbGVjdCAqIGZyb20gYXV0aG9ycyIsInJlc3VsdF92YXJpYWJsZSI6InJlc3VsdDQiLCJ0aW1lb3V0IjpudWxsfQ","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result4 = Postgrex.query!(conn, "select * from authors", [])
+```
+
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6InNlbGVjdCAqIGZyb20gYm9va3MiLCJyZXN1bHRfdmFyaWFibGUiOiJyZXN1bHQ1IiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result5 = Postgrex.query!(conn, "select * from books", [])
+```
 
 From the PostgreSQL prompt, create an author in the `authors` table.
 
@@ -160,7 +233,11 @@ INSERT INTO authors (ID,NAME) VALUES (1, 'Patrick Rothfuss');
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6IklOU0VSVCBJTlRPIGF1dGhvcnMgVkFMVUVTICgxLCAnSmFtZXMgQm9uZCcpIiwicmVzdWx0X3ZhcmlhYmxlIjoicmVzdWx0NiIsInRpbWVvdXQiOm51bGx9","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result6 = Postgrex.query!(conn, "INSERT INTO authors VALUES (1, 'James Bond')", [])
+```
 
 From the PostgreSQL prompt, create a book in the `books` table that belongs to the author you previously created.
 
@@ -173,7 +250,16 @@ INSERT INTO books (ID,TITLE,CONTENT,AUTHORID) VALUES (1, 'Name of the Wind', 'My
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6IklOU0VSVCBJTlRPIGJvb2tzIFZBTFVFUyAoMSwgJ0hvdyB0byBiZSBsaWtlIGFnZW50IDA3JywgJ0ZvbGxvdyB0aGVzZSBzaW1wbGUgc3RlcHMsIGFuZCB5b3UgY2FuIGJlY29tZSBqdXN0IGxpa2UgbWUgLSBKYW1lcyBCb25kLCBvciBzaG91bGQgSSBzYXksIGFnZW50IDAwNycsIDEpIiwicmVzdWx0X3ZhcmlhYmxlIjoicmVzdWx0NyIsInRpbWVvdXQiOm51bGx9","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result7 =
+  Postgrex.query!(
+    conn,
+    "INSERT INTO books VALUES (1, 'How to be like agent 07', 'Follow these simple steps, and you can become just like me - James Bond, or should I say, agent 007', 1)",
+    []
+  )
+```
 
 From the PostgreSQL prompt, select all authors.
 
@@ -186,7 +272,11 @@ SELECT * FROM authors;
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6InNlbGVjdCAqIGZyb20gYXV0aG9ycyIsInJlc3VsdF92YXJpYWJsZSI6InJlc3VsdDgiLCJ0aW1lb3V0IjpudWxsfQ","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result8 = Postgrex.query!(conn, "select * from authors", [])
+```
 
 From the PostgreSQL prompt, select all books.
 
@@ -199,7 +289,11 @@ SELECT * FROM books
 
 </details>
 
-<!-- livebook:{"break_markdown":true} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6InNlbGVjdCAqIGZyb20gYm9va3MiLCJyZXN1bHRfdmFyaWFibGUiOiJyZXN1bHQ5IiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result9 = Postgrex.query!(conn, "select * from books", [])
+```
 
 From the PostgreSQL prompt, select all books that belong to the author you previously created.
 
@@ -211,6 +305,20 @@ SELECT * FROM books b WHERE b.authorid = 1
 ```
 
 </details>
+
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwiZGF0YV9mcmFtZV9hbGlhcyI6IkVsaXhpci5FeHBsb3Jlci5EYXRhRnJhbWUiLCJxdWVyeSI6InNlbGVjdCAqIGZyb20gYm9va3NcbndoZXJlIGJvb2tzLkFVVEhPUklEID0gMSIsInJlc3VsdF92YXJpYWJsZSI6InJlc3VsdDEwIiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+
+```elixir
+result10 =
+  Postgrex.query!(
+    conn,
+    """
+    select * from books
+    where books.AUTHORID = 1
+    """,
+    []
+  )
+```
 
 ## Commit Your Progress
 
