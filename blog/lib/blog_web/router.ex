@@ -18,6 +18,11 @@ defmodule BlogWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    resources "/users", UserController
+    resources "/posts", PostController
+    resources "/tags", TagController
+    resources "/comments", CommentController
+    resources "/coverimages", CoverImageController
   end
 
   # Other scopes may use custom stacks.

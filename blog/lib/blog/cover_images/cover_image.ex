@@ -1,0 +1,20 @@
+defmodule Blog.CoverImages.CoverImage do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+  schema "coverimages" do
+    field :url, :string
+    field :post_id, :binary_id
+
+    timestamps(type: :utc_datetime)
+  end
+
+  @doc false
+  def changeset(cover_image, attrs) do
+    cover_image
+    |> cast(attrs, [:url])
+    |> validate_required([:url])
+  end
+end
