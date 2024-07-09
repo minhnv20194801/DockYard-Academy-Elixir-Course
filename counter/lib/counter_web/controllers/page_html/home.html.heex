@@ -1,0 +1,6 @@
+<h1>Current counter: <%=@count%></h1>
+<.form :let={f} for={%{}} action={~p"/"}>
+  <.input type="number" field={f[:increment_by]} value={1} />
+  <.input type="hidden" field={f[:count]} value={@count} />
+  <.button class="mt-2">Increment</.button>
+</.form>
