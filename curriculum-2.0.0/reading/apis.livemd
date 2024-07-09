@@ -51,7 +51,7 @@ Generally, API refers to web APIs, which are programs that run on the internet. 
 
 We won't go deep into networking or how the internet works, as that is beyond the scope of this course. However, Crash Course Computer Science provides an excellent overview.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=AEaKrq3SpW8\")","title":"The Internet: Crash Course Computer Science"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9QUVhS3JxM1NwVzhcIikiLCJ0aXRsZSI6IlRoZSBJbnRlcm5ldDogQ3Jhc2ggQ291cnNlIENvbXB1dGVyIFNjaWVuY2UifQ","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=AEaKrq3SpW8")
@@ -86,6 +86,14 @@ A URL (Uniform Resource Locator) is a string of characters that specifies the ad
 Identify the Protocol, Domain Name, Path, and Query string (separated into separate query parameters and their values) in the following url:
 
 https://www.fakedomaindoesnotexist.com/fake/domain?greeting=hello&fake=true
+
+Protocol: https
+
+Domain Name: www.fakedomaindoesnotexist.com
+
+Path: /fake/domain
+
+Query string: "greeting=hello" and "fake=true"
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -329,7 +337,7 @@ decoded_body = Jason.decode!(response.body)
 Now we can work with the decoded body like any Elixir map. For example we can access the "joke" field.
 
 ```elixir
-decoded_body["joke"]
+decoded_body["setup"]
 ```
 
 ## Building A Finch Request
@@ -472,7 +480,25 @@ IO.puts(message)
 </details>
 
 ```elixir
+method = :post
+api_key = ""
 
+headers = [
+  {"Content-Type", "application/json"},
+  {"Authorization", "Bearer #{api_key}"}
+]
+
+body =
+  Jason.encode!(%{
+    model: "gpt-3.5-turbo",
+    messages: [%{role: "user", content: "Hello!"}]
+  })
+
+url = "https://api.openai.com/v1/chat/completions"
+
+request = Finch.build(method, url, headers, body) |> Finch.request!(MyApp.Finch)
+
+Jason.decode!(request.body)
 ```
 
 ## Commit Your Progress
