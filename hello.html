@@ -1,31 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>Hello!</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        .box-model-example {
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            padding: 10px;
-            margin: 10px;
-            border: solid black 10px;
+        button {
+            border: 5px solid orange;
+            border-radius: 25px;
+            padding: 5px;
+            margin: 20px;
         }
-        p {
-            font-family: 'Roboto', sans-serif;
+
+        button:hover {
+            background-color: orange;
+        }
+
+        .red {
+            background-color: red;
+            width: 80%;
+            margin: auto;
+            padding: 10px;
+            margin: 20px;
+        }
+
+        .orange {
+            padding: 10px;
+            background-color: orange;
+        }
+
+        .yellow {
+            padding: 10px;
+            background-color: yellow;
+        }
+
+        .green {
+            padding: 10px;
+            background-color: green;
+        }
+
+        .blue {
+            padding: 10px;
+            background-color: blue;
+        }
+
+        .purple {
+            padding: 10px;
+            background-color: purple;
+        }
+
+        .inner {
+            background-color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        img {
+            width: 100%;
+            border-radius: 0px 25px 0px 0px;
+        }
+
+        .card {
+            width: 20%;
+            border: 5px solid;
+            border-radius: 0px 25px 0px 25px;
+        }
+
+        .card .card-content {
+            margin: 5px;
+            padding: 5px;
+            border-bottom: 10px solid black;
         }
     </style>
 </head>
 
 <body>
-    <p class="box-model-example">Content</p>
+    <!-- Component goes here -->
+    <button>Click me!</button>
+    <div class="red">
+        <div class="orange">
+            <div class="yellow">
+                <div class="green">
+                    <div class="blue">
+                        <div class="purple">
+                            <div class="inner">
+                                All the colors of the rainbow!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <img src="https://picsum.photos/200/100"></img>
+        <div class="card-content">
+            <h1>Card heading</h1>
+            <p>Card Subtitle</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dignissim lobortis ornare. Mauris id massa
+                sem. Curabitur ut felis id risus elementum maximus. Etiam in lorem risus. Donec ac vulputate elit, sed
+                pellentesque lacus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus
+                mus. Fusce augue tellus, efficitur ac pretium nec, varius vel elit. Praesent nibh eros, porttitor ut
+                lorem in, mollis dictum massa. Nullam finibus quam congue, molestie ex quis, facilisis felis. Vestibulum
+                auctor imperdiet velit eu consequat. In volutpat, dolor vel condimentum maximus, tortor nulla viverra
+                augue, a lacinia risus urna vestibulum metus. Pellentesque vulputate ligula efficitur porttitor
+                hendrerit. Nulla tempus quam arcu, sed pellentesque urna dapibus tincidunt. Pellentesque accumsan purus
+                ut luctus vehicula. Sed a sem nisl. </p>
+        </div>
+    </div>
 </body>
 
 </html>

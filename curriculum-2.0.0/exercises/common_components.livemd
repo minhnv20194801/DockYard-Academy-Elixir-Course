@@ -55,9 +55,11 @@ Create an `.html` document or use [CodePen](https://codepen.io/pen/) to create t
 
 Replicate the following outlined button as closely as you can.
 
-<!-- livebook:{"break_markdown":true} -->
+```elixir
+File.cwd!()
+```
 
-![](images/outline-button.png)
+![](https://www.google.com/search?q=image&client=ubuntu-sn&sca_esv=58ef9298476ae25c&sca_upv=1&channel=fs&sxsrf=ADLYWIJlLvT7PxQDvHVmswdsLx8ncfIglA:1720495287881&udm=2&source=iu&ictx=1&vet=1&fir=tYmxDgFq4MrkJM%252C-t22bY2ix3gHaM%252C%252Fm%252F0jg24%253BASMDFNsL7Vw1YM%252CbKJ3gdlWTtaNoM%252C_%253BivTDs79HInLVcM%252CU9G_8UXPMlqatM%252C_%253BsKMM4eBjWSQEBM%252CB51x0PBR9KNzvM%252C_%253BB_ypq20yGKrazM%252C6dhDHhJGcmvL6M%252C_%253BBUAKd056ph_mUM%252CExDvm63D_wCvSM%252C_%253BKZO3nW5sYR2QfM%252CPwAbZUQYX-g-lM%252C_&usg=AI4_-kQ_bqtjOVbyNMMkGdS6-LKjWnh9Cg&sa=X&ved=2ahUKEwjS8OKzgJmHAxWtslYBHZo7DRMQ_B16BAglEAE#vhid=tYmxDgFq4MrkJM&vssid=mosaic)
 
 <!-- livebook:{"break_markdown":true} -->
 
