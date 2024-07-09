@@ -60,7 +60,7 @@ An HTML element generally includes an opening tag, content, and closing tag.
 
 Here is a brief overview of HTML by Fireship.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=ok-plXXHlWw\")","title":"Hidden Cell"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9b2stcGxYWEhsV3dcIikiLCJ0aXRsZSI6IkhpZGRlbiBDZWxsIn0","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=ok-plXXHlWw")
@@ -99,7 +99,7 @@ Here's a breakdown of our CSS rule.
 
 <!-- livebook:{"break_markdown":true} -->
 
-![](images/css_breakdown.png)
+![](reading/images/css_breakdown.png)
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -1186,13 +1186,13 @@ Flex and Grid are two very powerful ways to create responsive layouts with CSS. 
 
 To learn more about Flexbox, we recommend you start with these two quick primers by Fireship.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=K74l26pE4YA&ab_channel=Fireship\")","title":"Flexbox"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9Szc0bDI2cEU0WUEmYWJfY2hhbm5lbD1GaXJlc2hpcFwiKSIsInRpdGxlIjoiRmxleGJveCJ9","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=K74l26pE4YA&ab_channel=Fireship")
 ```
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=uuOXPWCh-6o&ab_channel=Fireship\")","title":"Grid"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9dXVPWFBXQ2gtNm8mYWJfY2hhbm5lbD1GaXJlc2hpcFwiKSIsInRpdGxlIjoiR3JpZCJ9","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=uuOXPWCh-6o&ab_channel=Fireship")
