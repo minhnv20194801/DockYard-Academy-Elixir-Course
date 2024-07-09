@@ -45,7 +45,7 @@ Databases store long-term information in a program. There are many kinds of data
 
 Here's a great primer by Linux Academy.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=Tk1t3WKK-ZY\")","title":"PostgreSQL"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9VGsxdDNXS0stWllcIikiLCJ0aXRsZSI6IlBvc3RncmVTUUwifQ","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=Tk1t3WKK-ZY")
@@ -228,7 +228,7 @@ Now that we're connected to the database. We can use a Structured Query Language
 
 For a primer on SQL syntax, here's a great video by Danielle Thé.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=27axs9dO7AE\")","title":"SQL"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9MjdheHM5ZE83QUVcIikiLCJ0aXRsZSI6IlNRTCJ9","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=27axs9dO7AE")
@@ -384,7 +384,7 @@ We can then use [SQL Comparison Operators](https://www.sqltutorial.org/sql-compa
 
 Livebook provides [Smart Cells](https://www.youtube.com/watch?v=4hVIxyHxwK8&ab_channel=ElixirConf) which can connect to our PostgreSQL Database. For example, the following smart cell should successfully connect to your `example` database if you used the default `postgres` user.
 
-<!-- livebook:{"attrs":{"database":"example","hostname":"localhost","password":"postgres","port":5432,"type":"postgres","username":"postgres","variable":"conn"},"chunks":null,"kind":"Elixir.KinoDB.ConnectionCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJkYXRhYmFzZSI6InBvc3RncmVzIiwiaG9zdG5hbWUiOiJsb2NhbGhvc3QiLCJwYXNzd29yZCI6InBvc3RncmVzIiwicG9ydCI6NTQzMiwidHlwZSI6InBvc3RncmVzIiwidXNlX2lwdjYiOmZhbHNlLCJ1c2VybmFtZSI6InBvc3RncmVzIiwidmFyaWFibGUiOiJjb25uIn0","chunks":null,"kind":"Elixir.KinoDB.ConnectionCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 opts = [
@@ -392,7 +392,7 @@ opts = [
   port: 5432,
   username: "postgres",
   password: "postgres",
-  database: "example"
+  database: "postgres"
 ]
 
 {:ok, conn} = Kino.start_child({Postgrex, opts})
@@ -400,7 +400,7 @@ opts = [
 
 Once connected, these smart cells can make SQL queries to our database. Here you should see your users table.
 
-<!-- livebook:{"attrs":{"connection":{"type":"postgres","variable":"conn"},"query":"select * from users","result_variable":"result2","timeout":null},"chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJjb25uZWN0aW9uIjp7InR5cGUiOiJwb3N0Z3JlcyIsInZhcmlhYmxlIjoiY29ubiJ9LCJxdWVyeSI6InNlbGVjdCAqIGZyb20gdXNlcnMiLCJyZXN1bHRfdmFyaWFibGUiOiJyZXN1bHQyIiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 result2 = Postgrex.query!(conn, "select * from users", [])
@@ -412,18 +412,28 @@ result2 = Postgrex.query!(conn, "select * from users", [])
 
 Use the following SQL smart cell to create a new user in the users table. Re-evaluate the smart cell above to see the new user in the table.
 
-<!-- livebook:{"attrs":{"cache_query":true,"connection":{"type":"postgres","variable":"conn"},"query":"","result_variable":"result3","timeout":null},"chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwicXVlcnkiOiJJTlNFUlQgSU5UTyB1c2VycyBWQUxVRVMgKDIsICdCcnVjZSBXYXluZScsICdpbW5vdGJhdG1hbkBiYXRtYW4uY29tJykiLCJyZXN1bHRfdmFyaWFibGUiOiJyZXN1bHQzIiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
 
 ```elixir
-result3 = Postgrex.query!(conn, "", [])
+result3 =
+  Postgrex.query!(
+    conn,
+    "INSERT INTO users VALUES (2, 'Bruce Wayne', 'imnotbatman@batman.com')",
+    []
+  )
 ```
 
 Use the following SQL smart cell to create a new entry in the entries table, which has a foreign key to the same user you previously created.
 
-<!-- livebook:{"attrs":{"connection":{"type":"postgres","variable":"conn"},"query":"","result_variable":"result4","timeout":null},"chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJjYWNoZV9xdWVyeSI6dHJ1ZSwiY29ubmVjdGlvbiI6eyJ0eXBlIjoicG9zdGdyZXMiLCJ2YXJpYWJsZSI6ImNvbm4ifSwicXVlcnkiOiJJTlNFUlQgSU5UTyBlbnRyaWVzIFZBTFVFUyAoMiwgJ0FjY3VzZWQgdG8gYmUgYmF0bWFuJywgJ1RvZGF5LCBJIGdvdCBhY2N1c2VkIHRvIGJlIGJhdG1hbiBieSB0aGUgbWVkaWEsIGFnYWluLi4uJywgMikiLCJyZXN1bHRfdmFyaWFibGUiOiJyZXN1bHQ0IiwidGltZW91dCI6bnVsbH0","chunks":null,"kind":"Elixir.KinoDB.SQLCell","livebook_object":"smart_cell"} -->
 
 ```elixir
-result4 = Postgrex.query!(conn, "", [])
+result4 =
+  Postgrex.query!(
+    conn,
+    "INSERT INTO entries VALUES (2, 'Accused to be batman', 'Today, I got accused to be batman by the media, again...', 2)",
+    []
+  )
 ```
 
 ## Relationships
