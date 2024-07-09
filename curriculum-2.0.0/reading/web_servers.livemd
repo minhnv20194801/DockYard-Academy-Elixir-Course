@@ -141,7 +141,7 @@ Start the `WebServer` socket below by executing the code cell, then navigate to 
 ```elixir
 defmodule WebServer do
   def start(port) do
-    {:ok, listen_socket} = :gen_tcp.listen(port, active: false, reuseaddr: true)
+    {:ok, listen_socket} = :gen_tcp.listen(port, active: true, reuseaddr: true)
 
     accept(listen_socket)
   end
@@ -151,8 +151,8 @@ defmodule WebServer do
     {:ok, connection} = :gen_tcp.accept(listen_socket)
 
     # send response
-    current_time = Time.to_string(Time.utc_now())
-    response = "HTTP/1.1 200\r\nContent-Type: text/html\r\n\r\n It is #{current_time}"
+    page_content = File.read!("/home/minh/git/DockYard-Academy-Elixir-Course/hello.html")
+    response = "HTTP/1.1 200\r\nContent-Type: text/html\r\n\r\n #{page_content}"
     :gen_tcp.send(connection, response)
 
     # close connection
