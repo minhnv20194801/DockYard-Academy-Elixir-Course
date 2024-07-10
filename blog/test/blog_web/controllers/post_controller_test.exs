@@ -2,6 +2,7 @@ defmodule BlogWeb.PostControllerTest do
   use BlogWeb.ConnCase
 
   import Blog.PostsFixtures
+  import Blog.UsersFixtures
 
   @create_attrs %{title: "some title", content: "some content", published_on: ~D[2024-07-08], visibility: true}
   @update_attrs %{title: "some updated title", content: "some updated content", published_on: ~D[2024-07-09], visibility: false}
@@ -23,7 +24,9 @@ defmodule BlogWeb.PostControllerTest do
 
   describe "create post" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/posts", post: @create_attrs)
+      user = user_fixture()
+      post_create_attrs = Map.put(@create_attrs, :created_user_id, user.id)
+      conn = post(conn, ~p"/posts", post: post_create_attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/posts/#{id}"

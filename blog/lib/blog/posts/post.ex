@@ -17,7 +17,7 @@ defmodule Blog.Posts.Post do
   @doc false
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:title, :content, :published_on, :visibility])
-    |> validate_required([:title, :content, :published_on, :visibility])
+    |> cast(attrs, [:title, :content, :published_on, :visibility, :created_user_id])
+    |> validate_required([:title, :content, :published_on, :visibility, :created_user_id])
   end
 end

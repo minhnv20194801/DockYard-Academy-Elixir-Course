@@ -7,6 +7,7 @@ defmodule Blog.PostsTest do
     alias Blog.Posts.Post
 
     import Blog.PostsFixtures
+    import Blog.UsersFixtures
 
     @invalid_attrs %{title: nil, content: nil, published_on: nil, visibility: nil}
 
@@ -21,7 +22,8 @@ defmodule Blog.PostsTest do
     end
 
     test "create_post/1 with valid data creates a post" do
-      valid_attrs = %{title: "some title", content: "some content", published_on: ~D[2024-07-08], visibility: true}
+      user = user_fixture()
+      valid_attrs = %{title: "some title", content: "some content", published_on: ~D[2024-07-08], visibility: true, created_user_id: user.id}
 
       assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
       assert post.title == "some title"

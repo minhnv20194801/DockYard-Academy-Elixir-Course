@@ -52,8 +52,34 @@ defmodule Blog.Posts do
 
   """
   def create_post(attrs \\ %{}) do
-    # TODO: testing only
-    %Post{created_user_id: "a4b1825b-427c-4389-b8cf-49f11b6b1ed4"}
+    # TODO: update function for testing only
+    all_atoms? =
+      Enum.all?(Map.keys(attrs), fn key ->
+        is_atom(key)
+      end)
+
+    attrs =
+      if all_atoms? do
+        Map.update(
+          attrs,
+          :created_user_id,
+          "a4b1825b-427c-4389-b8cf-49f11b6b1ed4",
+          fn old_value ->
+            old_value
+          end
+        )
+      else
+        Map.update(
+          attrs,
+          "created_user_id",
+          "a4b1825b-427c-4389-b8cf-49f11b6b1ed4",
+          fn old_value ->
+            old_value
+          end
+        )
+      end
+
+    %Post{}
     |> Post.changeset(attrs)
     |> Repo.insert()
   end
@@ -106,11 +132,15 @@ defmodule Blog.Posts do
   end
 
   def get_tags!(postId) do
-    query = from p in Post,
-      join: pt in PostTag, on: pt.post_id == p.id,
-      join: t in Tag, on: pt.tag_id == t.id,
-      where: p.id == ^postId,
-      select: t.name
+    query =
+      from(p in Post,
+        join: pt in PostTag,
+        on: pt.post_id == p.id,
+        join: t in Tag,
+        on: pt.tag_id == t.id,
+        where: p.id == ^postId,
+        select: t.name
+      )
 
     Repo.all(query)
   end

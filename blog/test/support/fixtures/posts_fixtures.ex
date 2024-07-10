@@ -8,13 +8,15 @@ defmodule Blog.PostsFixtures do
   Generate a post.
   """
   def post_fixture(attrs \\ %{}) do
+    user = Blog.UsersFixtures.user_fixture()
     {:ok, post} =
       attrs
       |> Enum.into(%{
         content: "some content",
         published_on: ~D[2024-07-08],
         title: "some title",
-        visibility: true
+        visibility: true,
+        created_user_id: user.id
       })
       |> Blog.Posts.create_post()
 
