@@ -23,6 +23,26 @@ defmodule BlogWeb.PostControllerTest do
       conn = get(conn, ~p"/posts")
       assert html_response(conn, 200) =~ "Listing Posts"
     end
+
+    test "lists all posts filter by visibility", %{conn: conn} do
+      post = post_fixture(title: "invisible post", visibility: false)
+      conn = get(conn, ~p"/posts")
+      refute html_response(conn, 200) =~ post.title
+    end
+
+    test "list of posts from newest to oldest", %{conn: conn} do
+      older_post = post_fixture(title: "older post")
+      newer_post = post_fixture(title: "newer post", published_on: ~D[2024-07-10])
+      conn = get(conn, ~p"/posts")
+      response = html_response(conn, 200)
+      assert elem(:binary.match(response, older_post.title), 0) > elem(:binary.match(response, newer_post.title), 0)
+    end
+
+    test "list of posts filter posts with future published date", %{conn: conn} do
+      post = post_fixture(title: "future post", published_on: ~D[2025-01-01])
+      conn = get(conn, ~p"/posts")
+      refute html_response(conn, 200) =~ post.title
+    end
   end
 
   describe "new post" do

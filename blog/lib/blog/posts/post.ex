@@ -19,5 +19,6 @@ defmodule Blog.Posts.Post do
     post
     |> cast(attrs, [:title, :content, :published_on, :visibility, :created_user_id])
     |> validate_required([:title, :content, :published_on, :visibility, :created_user_id])
+    |> unique_constraint(:title, message: "This title is already recorded!")
   end
 end

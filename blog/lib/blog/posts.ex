@@ -20,7 +20,11 @@ defmodule Blog.Posts do
 
   """
   def list_posts do
-    Repo.all(Post)
+    Post
+    |> where([p], p.visibility)
+    |> where([p], p.published_on <= ^DateTime.utc_now())
+    |> order_by([p], desc: p.published_on)
+    |> Repo.all()
   end
 
   @doc """
@@ -39,6 +43,9 @@ defmodule Blog.Posts do
   def list_posts(title) do
     Post
     |> where([p], ilike(p.title, ^"%#{title}%"))
+    |> where([p], p.visibility)
+    |> where([p], p.published_on <= ^DateTime.utc_now())
+    |> order_by([p], desc: p.published_on)
     |> Repo.all()
   end
 
