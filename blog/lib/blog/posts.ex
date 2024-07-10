@@ -7,6 +7,8 @@ defmodule Blog.Posts do
   alias Blog.Repo
 
   alias Blog.Posts.Post
+  alias Blog.Tags.Tag
+  alias Blog.PostTags.PostTag
 
   @doc """
   Returns the list of posts.
@@ -50,7 +52,8 @@ defmodule Blog.Posts do
 
   """
   def create_post(attrs \\ %{}) do
-    %Post{}
+    # TODO: testing only
+    %Post{created_user_id: "a4b1825b-427c-4389-b8cf-49f11b6b1ed4"}
     |> Post.changeset(attrs)
     |> Repo.insert()
   end
@@ -100,5 +103,15 @@ defmodule Blog.Posts do
   """
   def change_post(%Post{} = post, attrs \\ %{}) do
     Post.changeset(post, attrs)
+  end
+
+  def get_tags!(postId) do
+    query = from p in Post,
+      join: pt in PostTag, on: pt.post_id == p.id,
+      join: t in Tag, on: pt.tag_id == t.id,
+      where: p.id == ^postId,
+      select: t.name
+
+    Repo.all(query)
   end
 end

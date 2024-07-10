@@ -28,7 +28,10 @@ defmodule BlogWeb.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Posts.get_post!(id)
-    render(conn, :show, post: post)
+
+    tags = Posts.get_tags!(id)
+
+    render(conn, :show, post: post, tags: tags)
   end
 
   def edit(conn, %{"id" => id}) do

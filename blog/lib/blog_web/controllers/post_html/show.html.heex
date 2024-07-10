@@ -11,6 +11,7 @@
 <.list>
   <:item title="Title"><%= @post.title %></:item>
   <:item title="Content"><%= @post.content %></:item>
+  <:item title="Tags"><%= Enum.join(@tags, " ") %></:item>
   <:item title="Published on"><%= @post.published_on %></:item>
   <:item title="Visibility"><%= @post.visibility %></:item>
 </.list>
