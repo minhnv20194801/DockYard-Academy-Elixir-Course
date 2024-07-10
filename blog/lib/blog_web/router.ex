@@ -2,27 +2,34 @@ defmodule BlogWeb.Router do
   use BlogWeb, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, html: {BlogWeb.Layouts, :root}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_live_flash)
+    plug(:put_root_layout, html: {BlogWeb.Layouts, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/", BlogWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
-    get "/", PageController, :home
-    resources "/users", UserController
-    resources "/posts", PostController
-    resources "/tags", TagController
-    resources "/comments", CommentController
-    resources "/coverimages", CoverImageController
+    get("/", PageController, :home)
+    resources("/users", UserController)
+    get("/posts", PostController, :index)
+    get("/posts/new", PostController, :new)
+    post("/posts", PostController, :create)
+    get("/posts/:id", PostController, :show)
+    get("/posts/:id/edit", PostController, :edit)
+    put("/posts/:id", PostController, :update)
+    patch("/posts/:id", PostController, :update)
+    delete("/posts/:id", PostController, :delete)
+    resources("/tags", TagController)
+    resources("/comments", CommentController)
+    resources("/coverimages", CoverImageController)
   end
 
   # Other scopes may use custom stacks.
@@ -40,10 +47,10 @@ defmodule BlogWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      live_dashboard "/dashboard", metrics: BlogWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+      live_dashboard("/dashboard", metrics: BlogWeb.Telemetry)
+      forward("/mailbox", Plug.Swoosh.MailboxPreview)
     end
   end
 end

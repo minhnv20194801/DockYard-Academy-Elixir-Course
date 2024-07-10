@@ -4,9 +4,10 @@ defmodule BlogWeb.PostController do
   alias Blog.Posts
   alias Blog.Posts.Post
 
-  def index(conn, _params) do
-    posts = Posts.list_posts()
-    render(conn, :index, posts: posts)
+  def index(conn, params) do
+    title_query = Map.get(params, "title")
+    posts = Posts.list_posts(title_query)
+    render(conn, :index, posts: posts, title_query: title_query)
   end
 
   def new(conn, _params) do

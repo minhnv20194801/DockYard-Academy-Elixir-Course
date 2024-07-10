@@ -4,8 +4,18 @@ defmodule BlogWeb.PostControllerTest do
   import Blog.PostsFixtures
   import Blog.UsersFixtures
 
-  @create_attrs %{title: "some title", content: "some content", published_on: ~D[2024-07-08], visibility: true}
-  @update_attrs %{title: "some updated title", content: "some updated content", published_on: ~D[2024-07-09], visibility: false}
+  @create_attrs %{
+    title: "some title",
+    content: "some content",
+    published_on: ~D[2024-07-08],
+    visibility: true
+  }
+  @update_attrs %{
+    title: "some updated title",
+    content: "some updated content",
+    published_on: ~D[2024-07-09],
+    visibility: false
+  }
   @invalid_attrs %{title: nil, content: nil, published_on: nil, visibility: nil}
 
   describe "index" do
@@ -74,9 +84,29 @@ defmodule BlogWeb.PostControllerTest do
       conn = delete(conn, ~p"/posts/#{post}")
       assert redirected_to(conn) == ~p"/posts"
 
-      assert_error_sent 404, fn ->
+      assert_error_sent(404, fn ->
         get(conn, ~p"/posts/#{post}")
-      end
+      end)
+    end
+  end
+
+  describe "search post by title" do
+    test "search for posts - non-matching", %{conn: conn} do
+      post = post_fixture(title: "some title")
+      conn = get(conn, ~p"/posts", title: "Non-Matching")
+      refute html_response(conn, 200) =~ post.title
+    end
+
+    test "search for posts - exact match", %{conn: conn} do
+      post = post_fixture(title: "some title")
+      conn = get(conn, ~p"/posts", title: "some title")
+      assert html_response(conn, 200) =~ post.title
+    end
+
+    test "search for posts - partial match", %{conn: conn} do
+      post = post_fixture(title: "some title")
+      conn = get(conn, ~p"/posts", title: "itl")
+      assert html_response(conn, 200) =~ post.title
     end
   end
 

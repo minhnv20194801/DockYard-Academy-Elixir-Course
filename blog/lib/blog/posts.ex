@@ -24,6 +24,25 @@ defmodule Blog.Posts do
   end
 
   @doc """
+  Returns the list of posts when parameters is nil.
+
+  ## Examples
+
+      iex> list_posts(nil)
+      [%Post{}, ...]
+
+  """
+  def list_posts(nil) do
+    list_posts()
+  end
+
+  def list_posts(title) do
+    Post
+    |> where([p], ilike(p.title, ^"%#{title}%"))
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single post.
 
   Raises `Ecto.NoResultsError` if the Post does not exist.
@@ -132,16 +151,14 @@ defmodule Blog.Posts do
   end
 
   def get_tags!(postId) do
-    query =
-      from(p in Post,
-        join: pt in PostTag,
-        on: pt.post_id == p.id,
-        join: t in Tag,
-        on: pt.tag_id == t.id,
-        where: p.id == ^postId,
-        select: t.name
-      )
-
-    Repo.all(query)
+    from(p in Post,
+      join: pt in PostTag,
+      on: pt.post_id == p.id,
+      join: t in Tag,
+      on: pt.tag_id == t.id,
+      where: p.id == ^postId,
+      select: t.name
+    )
+    |> Repo.all()
   end
 end
