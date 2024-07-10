@@ -4,9 +4,10 @@ defmodule BlogWeb.CommentController do
   alias Blog.Comments
   alias Blog.Comments.Comment
 
-  def index(conn, _params) do
-    comments = Comments.list_comments()
-    render(conn, :index, comments: comments)
+  def index(conn, params) do
+    post_id = Map.get(params, "post_id")
+    comments = Comments.list_comments(post_id)
+    render(conn, :index, comments: comments, post_id: post_id)
   end
 
   def new(conn, _params) do
@@ -19,7 +20,7 @@ defmodule BlogWeb.CommentController do
       {:ok, comment} ->
         conn
         |> put_flash(:info, "Comment created successfully.")
-        |> redirect(to: ~p"/comments/#{comment}")
+        |> redirect(to: ~p"/posts/#{comment.post_id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)
@@ -44,7 +45,7 @@ defmodule BlogWeb.CommentController do
       {:ok, comment} ->
         conn
         |> put_flash(:info, "Comment updated successfully.")
-        |> redirect(to: ~p"/comments/#{comment}")
+        |> redirect(to: ~p"/posts/#{comment.post_id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, comment: comment, changeset: changeset)
@@ -57,6 +58,6 @@ defmodule BlogWeb.CommentController do
 
     conn
     |> put_flash(:info, "Comment deleted successfully.")
-    |> redirect(to: ~p"/comments")
+    |> redirect(to: ~p"/posts/#{comment.post_id}")
   end
 end

@@ -28,7 +28,8 @@ defmodule BlogWeb.Router do
     patch("/posts/:id", PostController, :update)
     delete("/posts/:id", PostController, :delete)
     resources("/tags", TagController)
-    resources("/comments", CommentController)
+    get("/comments/:post_id", CommentController, :index)
+    resources("/comments", CommentController, only: [:create, :update, :delete, :edit])
     resources("/coverimages", CoverImageController)
   end
 

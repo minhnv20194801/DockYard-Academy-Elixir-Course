@@ -1,6 +1,8 @@
 defmodule BlogWeb.PostController do
   use BlogWeb, :controller
 
+  alias Blog.Comments
+  alias Blog.Comments.Comment
   alias Blog.Posts
   alias Blog.Posts.Post
 
@@ -29,10 +31,16 @@ defmodule BlogWeb.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Posts.get_post!(id)
-
     tags = Posts.get_tags!(id)
 
-    render(conn, :show, post: post, tags: tags)
+    comment_changeset = Comments.change_comment(%Comment{})
+
+    render(conn, :show,
+      post: post,
+      tags: tags,
+      comment_changeset: comment_changeset,
+      comments: post.comments
+    )
   end
 
   def edit(conn, %{"id" => id}) do

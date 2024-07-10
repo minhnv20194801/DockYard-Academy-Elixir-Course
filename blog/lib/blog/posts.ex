@@ -7,6 +7,7 @@ defmodule Blog.Posts do
   alias Blog.Repo
 
   alias Blog.Posts.Post
+  alias Blog.Comments.Comment
   alias Blog.Tags.Tag
   alias Blog.PostTags.PostTag
 
@@ -63,7 +64,11 @@ defmodule Blog.Posts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id), do: Repo.get!(Post, id)
+  def get_post!(id) do
+    comment_order_query = from(c in Comment, order_by: {:desc, c.updated_at})
+    from(p in Post, preload: [comments: ^comment_order_query])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a post.

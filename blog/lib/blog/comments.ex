@@ -17,8 +17,10 @@ defmodule Blog.Comments do
       [%Comment{}, ...]
 
   """
-  def list_comments do
-    Repo.all(Comment)
+  def list_comments(post_id) do
+    Comment
+    |> where([c], c.post_id == ^post_id)
+    |> Repo.all()
   end
 
   @doc """

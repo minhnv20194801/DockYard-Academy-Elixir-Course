@@ -19,7 +19,15 @@ defmodule Blog.PostsTest do
     test "list_posts/0 returns only visible posts" do
       user = user_fixture()
       post = post_fixture()
-      invisible_attrs = %{title: "some title", content: "some content", published_on: ~D[2024-07-09], visibility: false, created_user_id: user.id}
+
+      invisible_attrs = %{
+        title: "some title",
+        content: "some content",
+        published_on: ~D[2024-07-09],
+        visibility: false,
+        created_user_id: user.id
+      }
+
       Posts.create_post(invisible_attrs)
 
       assert Posts.list_posts() == [post]
@@ -28,7 +36,15 @@ defmodule Blog.PostsTest do
     test "list_posts/0 returns list of posts from newest to oldest" do
       user = user_fixture()
       post = post_fixture()
-      newer_attrs = %{title: "some title", content: "some content", published_on: ~D[2024-07-09], visibility: true, created_user_id: user.id}
+
+      newer_attrs = %{
+        title: "some title",
+        content: "some content",
+        published_on: ~D[2024-07-09],
+        visibility: true,
+        created_user_id: user.id
+      }
+
       {:ok, %Post{} = newer_post} = Posts.create_post(newer_attrs)
 
       assert Posts.list_posts() == [newer_post, post]
@@ -37,7 +53,15 @@ defmodule Blog.PostsTest do
     test "list_posts/0 returns filter posts with future published date" do
       user = user_fixture()
       post = post_fixture()
-      future_attrs = %{title: "some title", content: "some content", published_on: ~D[2025-07-09], visibility: true, created_user_id: user.id}
+
+      future_attrs = %{
+        title: "some title",
+        content: "some content",
+        published_on: ~D[2025-07-09],
+        visibility: true,
+        created_user_id: user.id
+      }
+
       Posts.create_post(future_attrs)
 
       assert Posts.list_posts() == [post]
@@ -45,12 +69,20 @@ defmodule Blog.PostsTest do
 
     test "get_post!/1 returns the post with given id" do
       post = post_fixture()
+      post = Map.put(post, :comments, [])
       assert Posts.get_post!(post.id) == post
     end
 
     test "create_post/1 with valid data creates a post" do
       user = user_fixture()
-      valid_attrs = %{title: "some title", content: "some content", published_on: ~D[2024-07-08], visibility: true, created_user_id: user.id}
+
+      valid_attrs = %{
+        title: "some title",
+        content: "some content",
+        published_on: ~D[2024-07-08],
+        visibility: true,
+        created_user_id: user.id
+      }
 
       assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
       assert post.title == "some title"
@@ -65,7 +97,13 @@ defmodule Blog.PostsTest do
 
     test "update_post/2 with valid data updates the post" do
       post = post_fixture()
-      update_attrs = %{title: "some updated title", content: "some updated content", published_on: ~D[2024-07-09], visibility: false}
+
+      update_attrs = %{
+        title: "some updated title",
+        content: "some updated content",
+        published_on: ~D[2024-07-09],
+        visibility: false
+      }
 
       assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert post.title == "some updated title"
@@ -76,6 +114,8 @@ defmodule Blog.PostsTest do
 
     test "update_post/2 with invalid data returns error changeset" do
       post = post_fixture()
+      post = Map.put(post, :comments, [])
+
       assert {:error, %Ecto.Changeset{}} = Posts.update_post(post, @invalid_attrs)
       assert post == Posts.get_post!(post.id)
     end

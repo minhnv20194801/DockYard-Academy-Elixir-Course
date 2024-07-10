@@ -5,7 +5,7 @@ defmodule Blog.Repo.Migrations.CreateComments do
     create table(:comments, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :content, :text
-      add :post_id, references(:posts, on_delete: :nothing, type: :binary_id)
+      add :post_id, references(:posts, on_delete: :delete_all, type: :binary_id), null: false
 
       timestamps(type: :utc_datetime)
     end
