@@ -96,6 +96,16 @@ defmodule Blog.PostsTest do
       assert {:error, %Ecto.Changeset{}} = Posts.create_post(@invalid_attrs)
     end
 
+    test "create_post/1 without user" do
+      no_user_attrs = %{
+        title: "some title",
+        content: "some content",
+        published_on: ~D[2024-07-09],
+        visibility: false
+      }
+      assert {:error, %Ecto.Changeset{}} = Posts.create_post(no_user_attrs)
+    end
+
     test "update_post/2 with valid data updates the post" do
       {_, post} = post_fixture()
 

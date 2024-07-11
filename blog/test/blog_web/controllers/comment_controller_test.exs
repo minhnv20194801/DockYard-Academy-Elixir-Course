@@ -34,10 +34,17 @@ defmodule BlogWeb.CommentControllerTest do
       assert html_response(conn, 200) =~ "some content"
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
+    test "redirect to login page when trying to create comment without login", %{conn: conn} do
+      {_, post} = post_fixture()
       user = user_fixture()
-      conn = conn |> log_in_user(user) |> post( ~p"/comments", comment: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Comment"
+
+      valid_create_attrs = Map.put(@create_attrs, :post_id, post.id)
+      valid_create_attrs = Map.put(valid_create_attrs, :user_id, user.id)
+
+      conn = conn |> post(~p"/comments", comment: valid_create_attrs)
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
     end
   end
 
@@ -47,6 +54,29 @@ defmodule BlogWeb.CommentControllerTest do
     test "renders form for editing chosen comment", %{conn: conn, comment: comment, user: user} do
       conn = conn |> log_in_user(user) |> get(~p"/comments/#{comment}/edit")
       assert html_response(conn, 200) =~ "Edit Comment"
+    end
+
+    test "redirect to login page when trying to edit comment without login", %{
+      conn: conn,
+      comment: comment
+    } do
+      conn = conn |> get(~p"/comments/#{comment}/edit")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
+    end
+
+    test "error when trying to edit other user comment", %{
+      conn: conn,
+      comment: comment,
+      user: user
+    } do
+      new_user = user_fixture()
+      assert new_user != user
+      conn = conn |> log_in_user(new_user) |> get(~p"/comments/#{comment}/edit")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/posts/#{comment.post_id}\">redirected</a>.</body></html>"
     end
   end
 
@@ -65,6 +95,33 @@ defmodule BlogWeb.CommentControllerTest do
       conn = conn |> log_in_user(user) |> put(~p"/comments/#{comment}", comment: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Comment"
     end
+
+    test "redirect to login page when update comment without login", %{
+      conn: conn,
+      comment: comment
+    } do
+      conn =
+        conn
+        |> put(~p"/comments/#{comment}", comment: @invalid_attrs)
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
+    end
+
+    test "error when update comment from different user", %{
+      conn: conn,
+      comment: comment
+    } do
+      new_user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(new_user)
+        |> put(~p"/comments/#{comment}", comment: @invalid_attrs)
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/posts/#{comment.post_id}\">redirected</a>.</body></html>"
+    end
   end
 
   describe "delete comment" do
@@ -73,6 +130,33 @@ defmodule BlogWeb.CommentControllerTest do
     test "deletes chosen comment", %{conn: conn, comment: comment, user: user} do
       conn = conn |> log_in_user(user) |> delete(~p"/comments/#{comment}")
       assert redirected_to(conn) == ~p"/posts/#{comment.post_id}"
+    end
+
+    test "redirect to login page when delete comment without login", %{
+      conn: conn,
+      comment: comment
+    } do
+      conn =
+        conn
+        |> delete(~p"/comments/#{comment}")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
+    end
+
+    test "error when delete comment from different user", %{
+      conn: conn,
+      comment: comment
+    } do
+      new_user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(new_user)
+        |> delete(~p"/comments/#{comment}")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/posts/#{comment.post_id}\">redirected</a>.</body></html>"
     end
   end
 

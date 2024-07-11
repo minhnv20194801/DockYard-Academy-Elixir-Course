@@ -19,7 +19,7 @@
 </.list>
 
 <.simple_form :let={f} for={@comment_changeset} action={~p"/comments"}>
-  <.input type="hidden" field={f[:user_id]} value={@current_user.id} />
+  <.input type="hidden" field={f[:user_id]} value={@current_user && @current_user.id} />
   <.input type="hidden" field={f[:post_id]} value={@post.id} />
   <.input field={f[:content]} type="text" label="Content" />
   <:actions>
@@ -27,15 +27,18 @@
   </:actions>
 </.simple_form>
 
-<.header>
-  Listing Comments
-</.header>
 
-<.table id="comments" rows={@comments} row_click={&JS.navigate(~p"/comments/#{&1.post_id}")}>
+<div class="mt-5 border-t border-b border-black">
+  <.header>
+    List of Comments
+  </.header>
+</div>
+
+<.table class="mt-0" id="comments" rows={@comments} row_click={&JS.navigate(~p"/comments/#{&1.post_id}")}>
   <%!-- <:row>Comment Title</:row> --%>
-
+  
   <:col :let={comment}>
-    <h1>User <%=comment.user.email%>:</h1>
+    <h1>User <%=comment.user.username%>:</h1>
     <%= comment.content %>
   </:col>
   <:action :let={comment}>

@@ -23,6 +23,7 @@ defmodule BlogWeb.UserRegistrationControllerTest do
     @tag :capture_log
     test "creates account and logs the user in", %{conn: conn} do
       email = unique_user_email()
+      username = String.slice(Enum.at(String.split(email, "@"), 0), 0..19)
 
       conn =
         post(conn, ~p"/users/register", %{
@@ -35,7 +36,7 @@ defmodule BlogWeb.UserRegistrationControllerTest do
       # Now do a logged in request and assert on the menu
       conn = get(conn, ~p"/")
       response = html_response(conn, 200)
-      assert response =~ email
+      assert response =~ username
       assert response =~ ~p"/users/settings"
       assert response =~ ~p"/users/log_out"
     end

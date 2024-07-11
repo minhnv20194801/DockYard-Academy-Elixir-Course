@@ -83,33 +83,6 @@ defmodule Blog.Posts do
 
   """
   def create_post(attrs \\ %{}) do
-    # TODO: update function for testing only
-    all_atoms? =
-      Enum.all?(Map.keys(attrs), fn key ->
-        is_atom(key)
-      end)
-
-    attrs =
-      if all_atoms? do
-        Map.update(
-          attrs,
-          :created_user_id,
-          "a4b1825b-427c-4389-b8cf-49f11b6b1ed4",
-          fn old_value ->
-            old_value
-          end
-        )
-      else
-        Map.update(
-          attrs,
-          "created_user_id",
-          "a4b1825b-427c-4389-b8cf-49f11b6b1ed4",
-          fn old_value ->
-            old_value
-          end
-        )
-      end
-
     %Post{}
     |> Post.changeset(attrs)
     |> Repo.insert()

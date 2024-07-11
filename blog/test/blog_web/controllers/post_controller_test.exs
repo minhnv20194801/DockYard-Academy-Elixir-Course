@@ -73,6 +73,13 @@ defmodule BlogWeb.PostControllerTest do
       conn = conn |> log_in_user(user) |> post(~p"/posts", post: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Post"
     end
+
+    test "redirect to login page when trying to create post without login", %{conn: conn} do
+      conn = post(conn, ~p"/posts", post: @create_attrs)
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
+    end
   end
 
   describe "edit post" do
@@ -81,6 +88,25 @@ defmodule BlogWeb.PostControllerTest do
     test "renders form for editing chosen post", %{conn: conn, post: post, user: user} do
       conn = conn |> log_in_user(user) |> get(~p"/posts/#{post}/edit")
       assert html_response(conn, 200) =~ "Edit Post"
+    end
+
+    test "redirect to login page when trying to edit post without login", %{
+      conn: conn,
+      post: post
+    } do
+      conn = get(conn, ~p"/posts/#{post}/edit")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
+    end
+
+    test "error when trying to edit other user post", %{conn: conn, post: post, user: user} do
+      new_user = user_fixture()
+      assert new_user != user
+      conn = conn |> log_in_user(new_user) |> get(~p"/posts/#{post}/edit")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/posts/#{post.id}\">redirected</a>.</body></html>"
     end
   end
 
@@ -105,6 +131,37 @@ defmodule BlogWeb.PostControllerTest do
 
       assert html_response(conn, 200) =~ "Edit Post"
     end
+
+    test "redirect to login page when update post without login", %{
+      conn: conn,
+      post: post
+    } do
+      conn =
+        conn
+        |> put(~p"/posts/#{post}",
+          post: @create_attrs
+        )
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
+    end
+
+    test "redirect to login page when update post from different user", %{
+      conn: conn,
+      post: post
+    } do
+      new_user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(new_user)
+        |> put(~p"/posts/#{post}",
+          post: @invalid_attrs
+        )
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/posts/#{post.id}\">redirected</a>.</body></html>"
+    end
   end
 
   describe "delete post" do
@@ -119,6 +176,33 @@ defmodule BlogWeb.PostControllerTest do
       assert_error_sent(404, fn ->
         get(conn, ~p"/posts/#{post}")
       end)
+    end
+
+    test "redirect to login page when delete post without login", %{
+      conn: conn,
+      post: post
+    } do
+      conn =
+        conn
+        |> delete(~p"/posts/#{post}")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
+    end
+
+    test "redirect to login page when delete post from different user", %{
+      conn: conn,
+      post: post
+    } do
+      new_user = user_fixture()
+
+      conn =
+        conn
+        |> log_in_user(new_user)
+        |> delete(~p"/posts/#{post}")
+
+      assert html_response(conn, 302) =~
+               "<html><body>You are being <a href=\"/posts/#{post.id}\">redirected</a>.</body></html>"
     end
   end
 

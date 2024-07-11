@@ -2,7 +2,6 @@ defmodule BlogWeb.CommentController do
   use BlogWeb, :controller
 
   alias Blog.Comments
-  alias Blog.Comments.Comment
 
   plug :require_user_owns_comment when action in [:edit, :update, :delete]
 
@@ -10,11 +9,6 @@ defmodule BlogWeb.CommentController do
     post_id = Map.get(params, "post_id")
     comments = Comments.list_comments(post_id)
     render(conn, :index, comments: comments, post_id: post_id)
-  end
-
-  def new(conn, _params) do
-    changeset = Comments.change_comment(%Comment{})
-    render(conn, :new, changeset: changeset)
   end
 
   def create(conn, %{"comment" => comment_params}) do

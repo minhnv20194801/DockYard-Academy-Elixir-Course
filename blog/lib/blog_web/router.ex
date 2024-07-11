@@ -27,13 +27,17 @@ defmodule BlogWeb.Router do
     patch("/posts/:id", PostController, :update)
     delete("/posts/:id", PostController, :delete)
 
-    resources("/comments", CommentController, only: [:create, :update, :delete, :edit])
+    post("/comments", CommentController, :create)
+    get("/comments/:id/edit", CommentController, :edit)
+    put("/comments/:id", CommentController, :update)
+    patch("/comments/:id", CommentController, :update)
+    delete("/comments/:id", CommentController, :delete)
   end
 
   scope "/", BlogWeb do
     pipe_through(:browser)
 
-    get("/", PostController, :index)
+    get("/", PageController, :home)
     get("/posts", PostController, :index)
     get("/posts/:id", PostController, :show)
     resources("/tags", TagController)

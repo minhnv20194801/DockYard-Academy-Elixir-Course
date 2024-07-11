@@ -36,6 +36,20 @@ defmodule Blog.CommentsTest do
       assert comment.content == "some content"
     end
 
+    test "create_comment/1 without user" do
+      {_, post} = post_fixture()
+
+      no_user_attrs = %{content: "some content", post_id: post.id}
+      assert {:error, %Ecto.Changeset{}} = Comments.create_comment(no_user_attrs)
+    end
+
+    test "create_comment/1 without post" do
+      {user, _post} = post_fixture()
+
+      no_post_attrs = %{content: "some content", user_id: user.id}
+      assert {:error, %Ecto.Changeset{}} = Comments.create_comment(no_post_attrs)
+    end
+
     test "create_comment/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Comments.create_comment(@invalid_attrs)
     end
