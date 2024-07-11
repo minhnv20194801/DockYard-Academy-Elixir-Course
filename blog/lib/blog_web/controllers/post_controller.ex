@@ -6,6 +6,8 @@ defmodule BlogWeb.PostController do
   alias Blog.Posts
   alias Blog.Posts.Post
 
+  plug :require_user_owns_post when action in [:edit, :update, :delete]
+
   def index(conn, params) do
     title_query = Map.get(params, "title")
     posts = Posts.list_posts(title_query)
@@ -39,7 +41,9 @@ defmodule BlogWeb.PostController do
       post: post,
       tags: tags,
       comment_changeset: comment_changeset,
-      comments: post.comments
+      comments: Enum.map(post.comments, fn comment ->
+        Comments.get_comment!(comment.id)
+      end)
     )
   end
 
@@ -70,5 +74,19 @@ defmodule BlogWeb.PostController do
     conn
     |> put_flash(:info, "Post deleted successfully.")
     |> redirect(to: ~p"/posts")
+  end
+
+  defp require_user_owns_post(conn, _params) do
+    post_id = conn.path_params["id"]
+    post = Posts.get_post!(post_id)
+
+    if conn.assigns[:current_user].id == post.created_user_id do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You can only edit or delete your own posts.")
+      |> redirect(to: ~p"/posts/#{post_id}")
+      |> halt()
+    end
   end
 end

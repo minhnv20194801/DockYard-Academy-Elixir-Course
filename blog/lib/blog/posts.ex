@@ -66,7 +66,7 @@ defmodule Blog.Posts do
   """
   def get_post!(id) do
     comment_order_query = from(c in Comment, order_by: {:desc, c.updated_at})
-    from(p in Post, preload: [comments: ^comment_order_query])
+    from(p in Post, preload: [:user, comments: ^comment_order_query])
     |> Repo.get!(id)
   end
 

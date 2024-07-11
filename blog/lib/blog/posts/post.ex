@@ -10,7 +10,7 @@ defmodule Blog.Posts.Post do
     field :published_on, :date
     field :visibility, :boolean, default: false
     has_many :comments, Blog.Comments.Comment, on_delete: :delete_all
-    field :created_user_id, :binary_id
+    belongs_to :user, Blog.Accounts.User, foreign_key: :created_user_id, references: :id
 
     timestamps(type: :utc_datetime)
   end

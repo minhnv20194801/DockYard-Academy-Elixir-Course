@@ -12,4 +12,4 @@
   <:item title="Content"><%= @comment.content %></:item>
 </.list>
 
-<.back navigate={~p"/comments"}>Back to comments</.back>
+<.back navigate={~p"/posts/#{@comment.post_id}"}>Back to post</.back>

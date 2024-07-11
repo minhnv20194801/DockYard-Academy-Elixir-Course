@@ -7,18 +7,18 @@ defmodule Blog.PostsTest do
     alias Blog.Posts.Post
 
     import Blog.PostsFixtures
-    import Blog.UsersFixtures
+    import Blog.AccountsFixtures
 
     @invalid_attrs %{title: nil, content: nil, published_on: nil, visibility: nil}
 
     test "list_posts/0 returns all posts" do
-      post = post_fixture()
+      {_, post} = post_fixture()
       assert Posts.list_posts() == [post]
     end
 
     test "list_posts/0 returns only visible posts" do
       user = user_fixture()
-      post = post_fixture()
+      {_, post} = post_fixture()
 
       invisible_attrs = %{
         title: "some title",
@@ -35,10 +35,10 @@ defmodule Blog.PostsTest do
 
     test "list_posts/0 returns list of posts from newest to oldest" do
       user = user_fixture()
-      post = post_fixture()
+      {_, post} = post_fixture()
 
       newer_attrs = %{
-        title: "some title",
+        title: "some new title",
         content: "some content",
         published_on: ~D[2024-07-09],
         visibility: true,
@@ -52,7 +52,7 @@ defmodule Blog.PostsTest do
 
     test "list_posts/0 returns filter posts with future published date" do
       user = user_fixture()
-      post = post_fixture()
+      {_, post} = post_fixture()
 
       future_attrs = %{
         title: "some title",
@@ -68,9 +68,10 @@ defmodule Blog.PostsTest do
     end
 
     test "get_post!/1 returns the post with given id" do
-      post = post_fixture()
+      {_, post} = post_fixture()
       post = Map.put(post, :comments, [])
-      assert Posts.get_post!(post.id) == post
+      post = Map.put(post, :user, [])
+      assert Map.put(Posts.get_post!(post.id), :user, []) == post
     end
 
     test "create_post/1 with valid data creates a post" do
@@ -96,7 +97,7 @@ defmodule Blog.PostsTest do
     end
 
     test "update_post/2 with valid data updates the post" do
-      post = post_fixture()
+      {_, post} = post_fixture()
 
       update_attrs = %{
         title: "some updated title",
@@ -113,26 +114,27 @@ defmodule Blog.PostsTest do
     end
 
     test "update_post/2 with invalid data returns error changeset" do
-      post = post_fixture()
+      {_, post} = post_fixture()
+      post = Map.put(post, :user, [])
       post = Map.put(post, :comments, [])
 
       assert {:error, %Ecto.Changeset{}} = Posts.update_post(post, @invalid_attrs)
-      assert post == Posts.get_post!(post.id)
+      assert post == Map.put(Posts.get_post!(post.id), :user, [])
     end
 
     test "delete_post/1 deletes the post" do
-      post = post_fixture()
+      {_, post} = post_fixture()
       assert {:ok, %Post{}} = Posts.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
     end
 
     test "change_post/1 returns a post changeset" do
-      post = post_fixture()
+      {_, post} = post_fixture()
       assert %Ecto.Changeset{} = Posts.change_post(post)
     end
 
     test "list_posts/1 filters posts by partial and case-insensitive title" do
-      post = post_fixture(title: "Title")
+      {_, post} = post_fixture(title: "Title")
 
       # non-matching
       assert Posts.list_posts("Non-Matching") == []

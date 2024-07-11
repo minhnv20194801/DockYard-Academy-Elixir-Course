@@ -8,7 +8,7 @@ defmodule Blog.PostsFixtures do
   Generate a post.
   """
   def post_fixture(attrs \\ %{}) do
-    user = Blog.UsersFixtures.user_fixture()
+    user = Blog.AccountsFixtures.user_fixture()
     {:ok, post} =
       attrs
       |> Enum.into(%{
@@ -20,6 +20,6 @@ defmodule Blog.PostsFixtures do
       })
       |> Blog.Posts.create_post()
 
-    post
+    {user, post}
   end
 end

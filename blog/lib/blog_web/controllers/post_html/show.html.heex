@@ -11,6 +11,7 @@
 
 <.list>
   <:item title="Title"><%= @post.title %></:item>
+  <:item title="Author"><%= @post.user.username %></:item>
   <:item title="Content"><%= @post.content %></:item>
   <:item title="Tags"><%= Enum.join(@tags, " ") %></:item>
   <:item title="Published on"><%= @post.published_on %></:item>
@@ -18,6 +19,7 @@
 </.list>
 
 <.simple_form :let={f} for={@comment_changeset} action={~p"/comments"}>
+  <.input type="hidden" field={f[:user_id]} value={@current_user.id} />
   <.input type="hidden" field={f[:post_id]} value={@post.id} />
   <.input field={f[:content]} type="text" label="Content" />
   <:actions>
@@ -30,7 +32,12 @@
 </.header>
 
 <.table id="comments" rows={@comments} row_click={&JS.navigate(~p"/comments/#{&1.post_id}")}>
-  <:col :let={comment}><%= comment.content %></:col>
+  <%!-- <:row>Comment Title</:row> --%>
+
+  <:col :let={comment}>
+    <h1>User <%=comment.user.email%>:</h1>
+    <%= comment.content %>
+  </:col>
   <:action :let={comment}>
     <div class="sr-only">
       <.link navigate={~p"/comments/#{comment.post_id}"}>Show</.link>
