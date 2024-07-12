@@ -10,9 +10,9 @@ defmodule Blog.Posts.Post do
     field :published_on, :date
     field :visibility, :boolean, default: false
     has_many :comments, Blog.Comments.Comment, on_delete: :delete_all
-    # has_one :cover_image, Blog.CoverImages.CoverImage, on_delete: :nothing
+    has_one :cover_image, Blog.CoverImages.CoverImage, on_replace: :update, on_delete: :delete_all
     belongs_to :user, Blog.Accounts.User, foreign_key: :created_user_id, references: :id
-    many_to_many :tags, Blog.Tags.Tag, join_through: "post_tags"
+    many_to_many :tags, Blog.Tags.Tag, join_through: "post_tags", on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
@@ -24,5 +24,6 @@ defmodule Blog.Posts.Post do
     |> validate_required([:title, :content, :published_on, :visibility, :created_user_id])
     |> unique_constraint(:title, message: "This title is already recorded!")
     |> put_assoc(:tags, tags)
+    |> cast_assoc(:cover_image)
   end
 end

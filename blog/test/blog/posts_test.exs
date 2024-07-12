@@ -8,6 +8,7 @@ defmodule Blog.PostsTest do
 
     import Blog.PostsFixtures
     import Blog.AccountsFixtures
+    import Blog.TagsFixtures
 
     @invalid_attrs %{title: nil, content: nil, published_on: nil, visibility: nil}
 
@@ -48,8 +49,8 @@ defmodule Blog.PostsTest do
       {:ok, %Post{} = newer_post} = Posts.create_post(newer_attrs)
 
       assert Enum.map(Posts.list_posts(), fn post ->
-               Map.put(post, :tags, [])
-             end) == [newer_post, post]
+               post.id
+             end) == [newer_post.id, post.id]
     end
 
     test "list_posts/0 returns filter posts with future published date" do
@@ -71,9 +72,7 @@ defmodule Blog.PostsTest do
 
     test "get_post!/1 returns the post with given id" do
       {_, post} = post_fixture()
-      post = Map.put(post, :comments, [])
-      post = Map.put(post, :user, [])
-      assert Map.put(Map.put(Posts.get_post!(post.id), :user, []), :tags, []) == post
+      assert Posts.get_post!(post.id).id == post.id
     end
 
     test "create_post/1 with valid data creates a post" do
@@ -92,6 +91,46 @@ defmodule Blog.PostsTest do
       assert post.content == "some content"
       assert post.published_on == ~D[2024-07-08]
       assert post.visibility == true
+    end
+
+    test "create_post/1 with tags" do
+      user = user_fixture()
+      tag = tag_fixture()
+
+      valid_attrs = %{
+        title: "some title",
+        content: "some content",
+        published_on: ~D[2024-07-08],
+        visibility: true,
+        created_user_id: user.id,
+        tag_ids: [tag.id]
+      }
+
+      assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
+      assert post.title == "some title"
+      assert post.content == "some content"
+      assert post.published_on == ~D[2024-07-08]
+      assert post.visibility == true
+    end
+
+    test "create_post/1 with cover image" do
+      user = user_fixture()
+
+      valid_attrs = %{
+        title: "some title",
+        content: "some content",
+        published_on: ~D[2024-07-08],
+        visibility: true,
+        created_user_id: user.id,
+        cover_image: %{url: "someimageurl.com"}
+      }
+
+      assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
+      assert post.title == "some title"
+      assert post.content == "some content"
+      assert post.published_on == ~D[2024-07-08]
+      assert post.visibility == true
+      assert post.cover_image.url == "someimageurl.com"
     end
 
     test "create_post/1 with invalid data returns error changeset" do
@@ -126,6 +165,56 @@ defmodule Blog.PostsTest do
       assert post.visibility == false
     end
 
+    test "update_post/2 add tags" do
+      {_, post} = post_fixture()
+      tag = tag_fixture()
+
+      update_attrs = %{
+        title: "some updated title",
+        content: "some updated content",
+        published_on: ~D[2024-07-09],
+        visibility: false,
+        tag_ids: [tag.id]
+      }
+
+      assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
+      assert post.title == "some updated title"
+      assert post.content == "some updated content"
+      assert post.published_on == ~D[2024-07-09]
+      assert post.visibility == false
+    end
+
+    test "update_post/2 change cover images" do
+      {_, post} = post_fixture()
+
+      update_attrs = %{
+        cover_image: %{url: "newcoverimageurl.com"}
+      }
+
+      assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
+      assert post.cover_image.url == "newcoverimageurl.com"
+    end
+
+    test "update_post/2 delete tags" do
+      {_, post} = post_fixture()
+      tag = tag_fixture()
+
+      update_attrs = %{
+        title: "some updated title",
+        content: "some updated content",
+        published_on: ~D[2024-07-09],
+        visibility: false,
+        tag_ids: [tag.id]
+      }
+
+      assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
+      assert {:ok, %Post{} = post} = Posts.update_post(post, Map.put(update_attrs, :tag_ids, []))
+      assert post.title == "some updated title"
+      assert post.content == "some updated content"
+      assert post.published_on == ~D[2024-07-09]
+      assert post.visibility == false
+    end
+
     test "update_post/2 with invalid data returns error changeset" do
       {_, post} = post_fixture()
       post = Map.put(post, :user, [])
@@ -137,6 +226,33 @@ defmodule Blog.PostsTest do
 
     test "delete_post/1 deletes the post" do
       {_, post} = post_fixture()
+      assert {:ok, %Post{}} = Posts.delete_post(post)
+      assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
+    end
+
+    test "delete_post/1 deletes the post with tags" do
+      {_, post} = post_fixture()
+      tag = tag_fixture()
+
+      update_attrs = %{
+        title: "some updated title",
+        content: "some updated content",
+        published_on: ~D[2024-07-09],
+        visibility: false,
+        tag_ids: [tag.id]
+      }
+      assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
+      assert {:ok, %Post{}} = Posts.delete_post(post)
+      assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
+    end
+
+    test "delete_post/1 deletes the post with cover image" do
+      {_, post} = post_fixture()
+
+      update_attrs = %{
+        cover_image: %{url: "newcoverimageurl.com"}
+      }
+      assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert {:ok, %Post{}} = Posts.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
     end

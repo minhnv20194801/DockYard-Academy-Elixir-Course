@@ -16,7 +16,8 @@ defmodule Blog.PostsFixtures do
         published_on: ~D[2024-07-08],
         title: "some title",
         visibility: true,
-        created_user_id: user.id
+        created_user_id: user.id,
+        cover_image: %{url: "https://i.ibb.co/yB3scXR/test.jpg"}
       })
       |> Blog.Posts.create_post()
 

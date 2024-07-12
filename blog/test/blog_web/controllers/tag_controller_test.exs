@@ -2,6 +2,7 @@ defmodule BlogWeb.TagControllerTest do
   use BlogWeb.ConnCase
 
   import Blog.TagsFixtures
+  import Blog.AccountsFixtures
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
@@ -22,14 +23,16 @@ defmodule BlogWeb.TagControllerTest do
   end
 
   describe "create tag" do
-    test "redirects to show when data is valid", %{conn: conn} do
+    test "redirects to create post when data is valid", %{conn: conn} do
+      user = user_fixture()
+      conn = conn |> log_in_user(user)
       conn = post(conn, ~p"/tags", tag: @create_attrs)
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == ~p"/tags/#{id}"
+      # assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == ~p"/posts/new"
 
-      conn = get(conn, ~p"/tags/#{id}")
-      assert html_response(conn, 200) =~ "Tag #{id}"
+      conn = conn |> get(~p"/posts/new")
+      assert html_response(conn, 200) =~ "some name"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

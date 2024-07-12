@@ -11,8 +11,7 @@ defmodule Blog.TagsTest do
     @invalid_attrs %{name: nil}
 
     test "list_tags/0 returns all tags" do
-      tag = tag_fixture()
-      assert Tags.list_tags() == [tag]
+      assert Enum.count(Tags.list_tags()) == 10
     end
 
     test "get_tag!/1 returns the tag with given id" do

@@ -16,10 +16,10 @@ defmodule BlogWeb.TagController do
 
   def create(conn, %{"tag" => tag_params}) do
     case Tags.create_tag(tag_params) do
-      {:ok, tag} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Tag created successfully.")
-        |> redirect(to: ~p"/tags/#{tag}")
+        |> redirect(to: ~p"/posts/new")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)

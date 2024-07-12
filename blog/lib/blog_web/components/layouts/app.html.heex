@@ -1,12 +1,20 @@
 <header class="w-full ">
   <div class="px-4 sm:px-6 lg:px-8 pb-2 pt-2 sticky flex gap-10 bg-gray-100 w-full">
     <.link href={~p"/"}>Home</.link>
-    <.link href={~p"/posts"}>Blog</.link>
+    <%!-- <.link href={~p"/posts"}>Blog</.link> --%>
     <h1 class="ml-auto">
       <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
         <%= if @current_user do %>
           <li class="text-[0.8125rem] leading-6 text-zinc-900">
-            <%= @current_user.username %>
+            Hello <%= @current_user.username %>!
+          </li>
+          <li>
+            <.link
+              href={~p"/posts/new"}
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            >
+              New Post
+            </.link>
           </li>
           <li>
             <.link

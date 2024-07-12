@@ -42,7 +42,7 @@ defmodule BlogWeb.Router do
     get("/posts/:id", PostController, :show)
     resources("/tags", TagController)
     get("/comments/:post_id", CommentController, :index)
-    resources("/coverimages", CoverImageController)
+    # resources("/coverimages", CoverImageController)
   end
 
   # Other scopes may use custom stacks.

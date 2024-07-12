@@ -2,6 +2,7 @@ defmodule BlogWeb.PostControllerTest do
   use BlogWeb.ConnCase
 
   import Blog.PostsFixtures
+  import Blog.TagsFixtures
   import Blog.AccountsFixtures
 
   @create_attrs %{
@@ -14,7 +15,8 @@ defmodule BlogWeb.PostControllerTest do
     title: "some updated title",
     content: "some updated content",
     published_on: ~D[2024-07-09],
-    visibility: false
+    visibility: false,
+    tag_ids: []
   }
   @invalid_attrs %{title: nil, content: nil, published_on: nil, visibility: nil}
 
@@ -56,6 +58,19 @@ defmodule BlogWeb.PostControllerTest do
   end
 
   describe "create post" do
+    test "with tags", %{conn: conn} do
+      user = user_fixture()
+      tag = tag_fixture()
+      tag_ids = [tag.id]
+      post_create_attrs = Map.put(@create_attrs, :created_user_id, user.id)
+
+      conn =
+        conn |> log_in_user(user) |> post(~p"/posts", post: post_create_attrs, tag_ids: tag_ids)
+
+      assert %{id: id} = redirected_params(conn)
+      assert redirected_to(conn) == ~p"/posts/#{id}"
+    end
+
     test "redirects to show when data is valid", %{conn: conn} do
       user = user_fixture()
       post_create_attrs = Map.put(@create_attrs, :created_user_id, user.id)
@@ -65,7 +80,7 @@ defmodule BlogWeb.PostControllerTest do
       assert redirected_to(conn) == ~p"/posts/#{id}"
 
       conn = get(conn, ~p"/posts/#{id}")
-      assert html_response(conn, 200) =~ "Post #{id}"
+      assert html_response(conn, 200) =~ @create_attrs.title
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -113,6 +128,35 @@ defmodule BlogWeb.PostControllerTest do
 
   describe "update post" do
     setup [:create_post]
+
+    test "add tags", %{conn: conn, post: post, user: user} do
+      tag = tag_fixture()
+      tag_ids = [tag.id]
+      updated_attrs = Map.put(@update_attrs, :tag_ids, tag_ids)
+
+      conn =
+        conn |> log_in_user(user) |> put(~p"/posts/#{post}", post: updated_attrs)
+
+      assert redirected_to(conn) == ~p"/posts/#{post}"
+
+      conn = get(conn, ~p"/posts/#{post}")
+      assert html_response(conn, 200) =~ "##{tag.name}"
+    end
+
+    test "delete tags", %{conn: conn, post: post, user: user} do
+      tag = tag_fixture()
+      tag_ids = [tag.id]
+      updated_attrs = Map.put(@update_attrs, :tag_ids, tag_ids)
+
+      conn =
+        conn
+        |> log_in_user(user)
+        |> put(~p"/posts/#{post}", post: updated_attrs)
+        |> put(~p"/posts/#{post}", post: @update_attrs)
+
+      conn = get(conn, ~p"/posts/#{post}")
+      refute html_response(conn, 200) =~ "##{tag.name}"
+    end
 
     test "redirects when data is valid", %{conn: conn, post: post, user: user} do
       conn =
@@ -176,6 +220,23 @@ defmodule BlogWeb.PostControllerTest do
       conn =
         conn
         |> log_in_user(user)
+        |> delete(~p"/posts/#{post}")
+
+      assert_error_sent(404, fn ->
+        get(conn, ~p"/posts/#{post}")
+      end)
+    end
+
+    test "deletes post with tags", %{conn: conn, post: post, user: user} do
+      tag = tag_fixture()
+      tag_ids = [tag.id]
+      updated_attrs = Map.put(@update_attrs, :tag_ids, tag_ids)
+
+      conn =
+        conn |> log_in_user(user) |> put(~p"/posts/#{post}", post: updated_attrs)
+
+      conn =
+        conn
         |> delete(~p"/posts/#{post}")
 
       assert_error_sent(404, fn ->

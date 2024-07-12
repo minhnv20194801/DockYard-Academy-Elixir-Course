@@ -20,34 +20,17 @@ defmodule Blog.Posts do
       [%Post{}, ...]
 
   """
-  def list_posts do
-    Post
-    |> where([p], p.visibility)
-    |> where([p], p.published_on <= ^DateTime.utc_now())
-    |> order_by([p], desc: p.published_on)
-    |> Repo.all()
-  end
-
-  @doc """
-  Returns the list of posts when parameters is nil.
-
-  ## Examples
-
-      iex> list_posts(nil)
-      [%Post{}, ...]
-
-  """
-  def list_posts(nil) do
-    list_posts()
-  end
-
-  def list_posts(title) do
+  def list_posts(title \\ "", tags \\ []) do
     Post
     |> where([p], ilike(p.title, ^"%#{title}%"))
     |> where([p], p.visibility)
     |> where([p], p.published_on <= ^DateTime.utc_now())
     |> order_by([p], desc: p.published_on)
     |> Repo.all()
+    |> Enum.filter(fn post ->
+      post_tags = get_tags!(post.id)
+      Enum.count(tags -- Enum.map(post_tags, fn tag -> tag.id end)) == 0
+    end)
   end
 
   @doc """
@@ -102,6 +85,8 @@ defmodule Blog.Posts do
   """
   def update_post(%Post{} = post, attrs, tags \\ []) do
     post
+    |> Repo.preload(:tags)
+    |> Repo.preload(:cover_image)
     |> Post.changeset(attrs, tags)
     |> Repo.update()
   end
@@ -131,8 +116,10 @@ defmodule Blog.Posts do
       %Ecto.Changeset{data: %Post{}}
 
   """
-  def change_post(%Post{} = post, attrs \\ %{}) do
-    Post.changeset(post, attrs)
+  def change_post(%Post{} = post, attrs \\ %{}, tags \\ []) do
+    post
+    |> Repo.preload(:tags)
+    |> Post.changeset(attrs, tags)
   end
 
   def get_tags!(postId) do
@@ -142,7 +129,7 @@ defmodule Blog.Posts do
       join: t in Tag,
       on: pt.tag_id == t.id,
       where: p.id == ^postId,
-      select: t.name
+      select: %{id: t.id, name: t.name}
     )
     |> Repo.all()
   end

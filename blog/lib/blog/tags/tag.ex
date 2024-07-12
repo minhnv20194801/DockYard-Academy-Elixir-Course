@@ -6,7 +6,7 @@ defmodule Blog.Tags.Tag do
   @foreign_key_type :binary_id
   schema "tags" do
     field :name, :string
-    many_to_many :posts, Blog.Posts.Post, join_through: "post_tags"
+    many_to_many :posts, Blog.Posts.Post, join_through: "post_tags", on_replace: :delete
     timestamps(type: :utc_datetime)
   end
 

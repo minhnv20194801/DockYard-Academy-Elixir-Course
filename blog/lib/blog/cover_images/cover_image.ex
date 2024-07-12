@@ -6,7 +6,7 @@ defmodule Blog.CoverImages.CoverImage do
   @foreign_key_type :binary_id
   schema "coverimages" do
     field :url, :string
-    field :post_id, :binary_id
+    belongs_to :post, Blog.Posts.Post, foreign_key: :post_id, references: :id
 
     timestamps(type: :utc_datetime)
   end
