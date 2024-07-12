@@ -86,6 +86,7 @@ defmodule BlogWeb.PostControllerTest do
     setup [:create_post]
 
     test "renders form for editing chosen post", %{conn: conn, post: post, user: user} do
+      post = Map.delete(post, :tags)
       conn = conn |> log_in_user(user) |> get(~p"/posts/#{post}/edit")
       assert html_response(conn, 200) =~ "Edit Post"
     end
@@ -114,7 +115,11 @@ defmodule BlogWeb.PostControllerTest do
     setup [:create_post]
 
     test "redirects when data is valid", %{conn: conn, post: post, user: user} do
-      conn = conn |> log_in_user(user) |> put(~p"/posts/#{post}", post: @update_attrs)
+      conn =
+        conn
+        |> log_in_user(user)
+        |> put(~p"/posts/#{post}", post: @update_attrs)
+
       assert redirected_to(conn) == ~p"/posts/#{post}"
 
       conn = get(conn, ~p"/posts/#{post}")
@@ -146,7 +151,7 @@ defmodule BlogWeb.PostControllerTest do
                "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
     end
 
-    test "redirect to login page when update post from different user", %{
+    test "error when update post from different user", %{
       conn: conn,
       post: post
     } do
@@ -190,7 +195,7 @@ defmodule BlogWeb.PostControllerTest do
                "<html><body>You are being <a href=\"/users/log_in\">redirected</a>.</body></html>"
     end
 
-    test "redirect to login page when delete post from different user", %{
+    test "error when delete post from different user", %{
       conn: conn,
       post: post
     } do

@@ -6,7 +6,7 @@
 <.post_form
   changeset={@changeset}
   action={~p"/posts/#{@post}"}
-  current_user={@current_user}
+  current_user={@@current_user && @current_user.id}
   tag_options={@tag_options}
 />
 
