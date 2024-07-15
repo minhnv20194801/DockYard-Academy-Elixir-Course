@@ -1,4 +1,4 @@
-<header class="w-full ">
+<header class="w-full sticky top-0 z-10">
   <div class="px-4 sm:px-6 lg:px-8 pb-2 pt-2 sticky flex gap-10 bg-gray-100 w-full">
     <.link href={~p"/"}>Home</.link>
     <%!-- <.link href={~p"/posts"}>Blog</.link> --%>
@@ -55,9 +55,24 @@
     </h1>
   </div>
 </header>
-
-<div class="w-full text-center text-4xl pt-10">
-  WELCOME
+<!-- Slider main container -->
+<div class="swiper-container mt-10">
+  <!-- Additional required wrapper -->
+  <div class="swiper-wrapper">
+    <!-- Slides -->
+    <div class="swiper-slide">
+      <div class="h-[240px] flex bg-cover text-white items-center text-9xl bg-[url('https://loremflickr.com/1920/360')]">
+        <p class="ml-auto mr-auto">WELCOME</p>
+      </div>
+    </div>
+    <div class="swiper-slide">
+      <div class="h-[240px] flex bg-cover text-white items-center text-9xl bg-[url('https://picsum.photos/1920/360')]">
+        <p class="ml-auto mr-auto">WELCOME</p>
+      </div>
+    </div>
+  </div>
+  <!-- If we need pagination -->
+  <div class="swiper-container-pagination text-center"></div>
 </div>
 
 <div class="w-full flex">
@@ -99,3 +114,15 @@
     <% end %>
   </div>
 </div>
+
+<script>
+  const swiper = new Swiper('.swiper-container', {
+    // Optional parameters
+    loop: true, 
+
+    // If we need pagination
+    pagination: {
+      el: '.swiper-container-pagination',
+    },
+  });
+</script>
