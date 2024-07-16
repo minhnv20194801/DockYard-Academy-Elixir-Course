@@ -241,6 +241,7 @@ defmodule Blog.PostsTest do
         visibility: false,
         tag_ids: [tag.id]
       }
+
       assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert {:ok, %Post{}} = Posts.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end
@@ -252,6 +253,7 @@ defmodule Blog.PostsTest do
       update_attrs = %{
         cover_image: %{url: "newcoverimageurl.com"}
       }
+
       assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert {:ok, %Post{}} = Posts.delete_post(post)
       assert_raise Ecto.NoResultsError, fn -> Posts.get_post!(post.id) end

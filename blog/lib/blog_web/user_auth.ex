@@ -1,4 +1,7 @@
 defmodule BlogWeb.UserAuth do
+  @moduledoc """
+  Authenticate user
+  """
   use BlogWeb, :verified_routes
 
   import Plug.Conn

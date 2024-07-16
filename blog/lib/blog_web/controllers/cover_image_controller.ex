@@ -16,10 +16,9 @@ defmodule BlogWeb.CoverImageController do
 
   def create(conn, %{"cover_image" => cover_image_params}) do
     case CoverImages.create_cover_image(cover_image_params) do
-      {:ok, cover_image} ->
+      {:ok, _cover_image} ->
         conn
         |> put_flash(:info, "Cover image created successfully.")
-        |> redirect(to: ~p"/coverimages/#{cover_image}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)
@@ -41,10 +40,9 @@ defmodule BlogWeb.CoverImageController do
     cover_image = CoverImages.get_cover_image!(id)
 
     case CoverImages.update_cover_image(cover_image, cover_image_params) do
-      {:ok, cover_image} ->
+      {:ok, _cover_image} ->
         conn
         |> put_flash(:info, "Cover image updated successfully.")
-        |> redirect(to: ~p"/coverimages/#{cover_image}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, cover_image: cover_image, changeset: changeset)
@@ -57,6 +55,5 @@ defmodule BlogWeb.CoverImageController do
 
     conn
     |> put_flash(:info, "Cover image deleted successfully.")
-    |> redirect(to: ~p"/coverimages")
   end
 end

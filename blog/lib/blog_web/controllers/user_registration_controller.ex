@@ -11,7 +11,13 @@ defmodule BlogWeb.UserRegistrationController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    user_params = Map.put(user_params, "username", String.slice(Enum.at(String.split(user_params["email"], "@"), 0), 0..19))
+    user_params =
+      Map.put(
+        user_params,
+        "username",
+        String.slice(Enum.at(String.split(user_params["email"], "@"), 0), 0..19)
+      )
+
     case Accounts.register_user(user_params) do
       {:ok, user} ->
         {:ok, _} =

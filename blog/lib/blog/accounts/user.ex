@@ -1,4 +1,7 @@
 defmodule Blog.Accounts.User do
+  @moduledoc """
+  User model, handle accessing user entity in the database
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

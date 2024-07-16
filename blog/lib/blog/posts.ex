@@ -29,7 +29,7 @@ defmodule Blog.Posts do
     |> Repo.all()
     |> Enum.filter(fn post ->
       post_tags = get_tags!(post.id)
-      Enum.count(tags -- Enum.map(post_tags, fn tag -> tag.id end)) == 0
+      Enum.empty?(tags -- Enum.map(post_tags, fn tag -> tag.id end))
     end)
   end
 
@@ -49,6 +49,7 @@ defmodule Blog.Posts do
   """
   def get_post!(id) do
     comment_order_query = from(c in Comment, order_by: {:desc, c.updated_at})
+
     from(p in Post, preload: [:user, comments: ^comment_order_query])
     |> Repo.get!(id)
   end

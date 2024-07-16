@@ -1,4 +1,7 @@
 defmodule Blog.CoverImages.CoverImage do
+  @moduledoc """
+  CoverImage model, handle accessing cover_images entity in the database
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

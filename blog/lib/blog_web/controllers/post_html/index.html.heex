@@ -6,8 +6,8 @@
     </.link>
   </:actions>
 </.header>
-<.simple_form :let={f} for={%{}} method={"get"} action={~p"/posts"}>
-  <.input field={f[:title]} type="text" label="Search Posts" value={@title_query || nil}/>
+<.simple_form :let={f} for={%{}} method="get" action={~p"/posts"}>
+  <.input field={f[:title]} type="text" label="Search Posts" value={@title_query || nil} />
   <:actions>
     <.button>Search</.button>
   </:actions>

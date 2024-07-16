@@ -8,7 +8,9 @@ defmodule Blog.Repo.Migrations.CreatePosts do
       add :content, :text
       add :published_on, :date
       add :visibility, :boolean, default: false, null: false
-      add :created_user_id, references(:users, on_delete: :delete_all, type: :binary_id), null: false
+
+      add :created_user_id, references(:users, on_delete: :delete_all, type: :binary_id),
+        null: false
 
       timestamps(type: :utc_datetime)
     end

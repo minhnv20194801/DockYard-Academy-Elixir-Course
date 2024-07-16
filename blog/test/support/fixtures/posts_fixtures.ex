@@ -9,6 +9,7 @@ defmodule Blog.PostsFixtures do
   """
   def post_fixture(attrs \\ %{}) do
     user = Blog.AccountsFixtures.user_fixture()
+
     {:ok, post} =
       attrs
       |> Enum.into(%{

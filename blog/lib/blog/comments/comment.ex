@@ -1,4 +1,7 @@
 defmodule Blog.Comments.Comment do
+  @moduledoc """
+  Comment model, handle accessing comment entity in the database
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

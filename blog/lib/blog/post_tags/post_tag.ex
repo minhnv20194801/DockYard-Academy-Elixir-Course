@@ -1,4 +1,7 @@
 defmodule Blog.PostTags.PostTag do
+  @moduledoc """
+  PostTag relation, handle accessing post_tags relationship in the database
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

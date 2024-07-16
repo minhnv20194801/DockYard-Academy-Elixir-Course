@@ -23,7 +23,9 @@ defmodule Blog.CommentsTest do
     test "get_comment!/1 returns the comment with given id" do
       {_, post} = post_fixture()
       {_, comment} = comment_fixture(post_id: post.id)
-      assert Map.put(Comments.get_comment!(comment.id), :user, %{}) == Map.put(comment, :user, %{})
+
+      assert Map.put(Comments.get_comment!(comment.id), :user, %{}) ==
+               Map.put(comment, :user, %{})
     end
 
     test "create_comment/1 with valid data creates a comment" do
@@ -69,7 +71,9 @@ defmodule Blog.CommentsTest do
       {_, post} = post_fixture()
       {_, comment} = comment_fixture(post_id: post.id)
       assert {:error, %Ecto.Changeset{}} = Comments.update_comment(comment, @invalid_attrs)
-      assert Map.put(comment, :user, %{}) == Map.put(Comments.get_comment!(comment.id), :user, %{})
+
+      assert Map.put(comment, :user, %{}) ==
+               Map.put(Comments.get_comment!(comment.id), :user, %{})
     end
 
     test "delete_comment/1 deletes the comment" do

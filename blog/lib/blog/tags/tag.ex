@@ -1,4 +1,7 @@
 defmodule Blog.Tags.Tag do
+  @moduledoc """
+  Tag model, handle accessing tag entity in the database
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

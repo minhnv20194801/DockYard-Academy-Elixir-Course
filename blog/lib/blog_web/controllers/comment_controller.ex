@@ -60,6 +60,7 @@ defmodule BlogWeb.CommentController do
   defp require_user_owns_comment(conn, _params) do
     comment_id = conn.path_params["id"]
     comment = Comments.get_comment!(comment_id)
+
     if conn.assigns[:current_user].id == comment.user_id do
       conn
     else

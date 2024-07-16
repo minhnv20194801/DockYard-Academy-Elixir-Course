@@ -1,4 +1,7 @@
 defmodule Blog.Posts.Post do
+  @moduledoc """
+  Post model, handle accessing post entity in the database
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
