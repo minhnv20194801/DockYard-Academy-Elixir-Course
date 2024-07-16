@@ -23,8 +23,8 @@ defmodule LiveViewCounterWeb.CounterLive do
     <h1>Counter</h1>
     <p>Count: <%= @count %></p>
     <.button id="increment-button" phx-click="increment">Increment</.button>
-    <.simple_form id="increment-form" for={@form} phx-change="change" phx-submit="increment_by">
-      <.input type="number" field={@form[:increment_by]} label="Increment Count"/>
+    <.simple_form id="increment-form" for={@form} phx-submit="increment_by" phx-change="change">
+      <.input type="text" field={@form[:increment_by]} label="Increment Count"/>
       <:actions>
         <.button>Increment</.button>
       </:actions>
