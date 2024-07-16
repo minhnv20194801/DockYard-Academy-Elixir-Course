@@ -20,6 +20,8 @@ defmodule PicChatWeb.MessageLive.FormComponent do
         phx-submit="save"
       >
         <.input field={@form[:content]} type="text" label="Content" />
+         <!-- Add the hidden user_id field -->
+        <.input field={@form[:user_id]} type="hidden" value={@current_user.id} />
         <:actions>
           <.button phx-disable-with="Saving...">Save Message</.button>
         </:actions>
@@ -56,7 +58,7 @@ defmodule PicChatWeb.MessageLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Message updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
@@ -71,7 +73,7 @@ defmodule PicChatWeb.MessageLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Message created successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_navigate(to: socket.assigns.navigate)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}

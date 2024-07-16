@@ -37,7 +37,10 @@ defmodule PicChat.Messages do
       ** (Ecto.NoResultsError)
 
   """
-  def get_message!(id), do: Repo.get!(Message, id)
+  def get_message!(id) do
+    from(m in Message, preload: [:user])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a message.

@@ -6,7 +6,14 @@ defmodule PicChatWeb.MessageLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :messages, Messages.list_messages())}
+    {:ok,
+     stream(
+       socket,
+       :messages,
+       Enum.map(Messages.list_messages(), fn message ->
+         PicChat.Repo.preload(message, :user)
+       end)
+     )}
   end
 
   @impl true
@@ -47,8 +54,17 @@ defmodule PicChatWeb.MessageLive.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     message = Messages.get_message!(id)
-    {:ok, _} = Messages.delete_message(message)
 
-    {:noreply, stream_delete(socket, :messages, message)}
+    if message.user_id == socket.assigns.current_user.id do
+      {:ok, _} = Messages.delete_message(message)
+      {:noreply, stream_delete(socket, :messages, message)}
+    else
+      {:noreply,
+       Phoenix.LiveView.put_flash(
+         socket,
+         :error,
+         "You are not authorized to delete this message."
+       )}
+    end
   end
 end
