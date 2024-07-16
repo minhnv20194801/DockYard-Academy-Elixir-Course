@@ -3,7 +3,7 @@ defmodule PicChat.Repo.Migrations.AddUsernameToUsers do
 
   def change do
     alter table(:users) do
-      add(:username, :text, null: false)
+      add(:username, :text)
     end
   end
 end

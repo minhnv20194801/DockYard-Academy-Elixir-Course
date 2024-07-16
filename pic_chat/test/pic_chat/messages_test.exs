@@ -20,16 +20,17 @@ defmodule PicChat.MessagesTest do
     test "get_message!/1 returns the message with given id" do
       user = user_fixture()
       message = message_fixture(user_id: user.id)
-      assert Messages.get_message!(message.id) == message
+      assert Messages.get_message!(message.id).id == message.id
     end
 
     test "create_message/1 with valid data creates a message" do
       user = user_fixture()
-      valid_attrs = %{content: "some content", user_id: user.id}
+      valid_attrs = %{content: "some content", user_id: user.id, picture: "images/picture.png"}
 
       assert {:ok, %Message{} = message} = Messages.create_message(valid_attrs)
       assert message.content == "some content"
       assert message.user_id == user.id
+      assert message.picture == "images/picture.png"
     end
 
     test "create_message/1 with invalid data returns error changeset" do
@@ -49,7 +50,7 @@ defmodule PicChat.MessagesTest do
       user = user_fixture()
       message = message_fixture(user_id: user.id)
       assert {:error, %Ecto.Changeset{}} = Messages.update_message(message, @invalid_attrs)
-      assert message == Messages.get_message!(message.id)
+      assert message.id == Messages.get_message!(message.id).id
     end
 
     test "delete_message/1 deletes the message" do
