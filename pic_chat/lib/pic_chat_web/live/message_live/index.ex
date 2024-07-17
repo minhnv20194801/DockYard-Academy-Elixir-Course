@@ -6,6 +6,10 @@ defmodule PicChatWeb.MessageLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      PicChatWeb.Endpoint.subscribe("messages")
+    end
+
     {:ok,
      stream(
        socket,
@@ -24,7 +28,7 @@ defmodule PicChatWeb.MessageLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Message")
-    |> assign(:message, Messages.get_message!(id))
+    |> assign(:message, PicChat.Repo.preload(Messages.get_message!(id), :user))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -51,12 +55,37 @@ defmodule PicChatWeb.MessageLive.Index do
     {:noreply, stream_insert(socket, :messages, message)}
   end
 
+  def handle_info(
+        %Phoenix.Socket.Broadcast{topic: "messages", event: "new", payload: message},
+        socket
+      ) do
+    message = PicChat.Repo.preload(message, :user)
+    {:noreply, stream_insert(socket, :messages, message, at: 0)}
+  end
+
+  def handle_info(
+        %Phoenix.Socket.Broadcast{topic: "messages", event: "edit", payload: message},
+        socket
+      ) do
+    message = PicChat.Repo.preload(message, :user)
+    {:noreply, stream_insert(socket, :messages, message)}
+  end
+
+  def handle_info(
+        %Phoenix.Socket.Broadcast{topic: "messages", event: "delete", payload: message},
+        socket
+      ) do
+    message = PicChat.Repo.preload(message, :user)
+    {:noreply, stream_delete(socket, :messages, message)}
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     message = Messages.get_message!(id)
 
     if message.user_id == socket.assigns.current_user.id do
       {:ok, _} = Messages.delete_message(message)
+      PicChatWeb.Endpoint.broadcast_from(self(), "messages", "delete", message)
       {:noreply, stream_delete(socket, :messages, message)}
     else
       {:noreply,
