@@ -5,6 +5,7 @@ defmodule PicChat.Accounts.User do
   schema "users" do
     field :email, :string
     field :username, :string
+    field :subscribed, :boolean, default: false
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
@@ -38,7 +39,7 @@ defmodule PicChat.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :username])
+    |> cast(attrs, [:email, :password, :username, :subscribed])
     |> validate_email(opts)
     |> validate_password(opts)
   end
