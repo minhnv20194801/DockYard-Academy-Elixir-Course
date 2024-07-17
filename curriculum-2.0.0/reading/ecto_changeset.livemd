@@ -289,7 +289,16 @@ keys = [:title, :content]
 </details>
 
 ```elixir
+initial_data = %{}
 
+params = %{title: "Peter", content: "secret_spider"}
+types = %{title: :string, content: :string}
+keys = [:title, :content]
+
+changeset =
+  Ecto.Changeset.cast({initial_data, types}, params, keys)
+  |> Ecto.Changeset.validate_required([:title, :content])
+  |> Ecto.Changeset.validate_length(:title, min: 3, max: 100)
 ```
 
 ## Schemaless Changesets
@@ -385,7 +394,38 @@ end
 </details>
 
 ```elixir
+defmodule Book do
+  defstruct [:title, :content, :author, :is_licenced, :is_published]
 
+  @types %{
+    title: :string,
+    content: :string,
+    author: :string,
+    is_licenced: :boolean,
+    is_published: :boolean
+  }
+
+  def changeset(%Book{} = book, params) do
+    # Cast the user struct and the types defined earlier with the keys from the params map
+    {book, @types}
+    |> Ecto.Changeset.cast(params, Map.keys(@types))
+    # Validate that the username and password fields are present
+    |> Ecto.Changeset.validate_required([:title, :content])
+    # Validate that the username field is between 3 and 40 characters long
+    |> Ecto.Changeset.validate_length(:title, min: 3, max: 199)
+    # Validate that the terms_and_conditions field is accepted
+    |> Ecto.Changeset.validate_acceptance(:is_licenced)
+  end
+
+  def new(params) do
+    # Start with an empty User struct
+    %Book{}
+    # Pass the struct and the params to the changeset function
+    |> changeset(params)
+    # Apply the update action to the changeset
+    |> Ecto.Changeset.apply_action(:update)
+  end
+end
 ```
 
 ## Commit Your Progress
