@@ -101,6 +101,7 @@ Passing the function directly.
 
 ```elixir
 slow_function = fn -> Process.sleep(1000) end
+:timer.tc(slow_function)
 ```
 
 ### Your Turn
@@ -130,6 +131,8 @@ defmodule MyModule do
     Process.sleep(1000)
   end
 end
+
+:timer.tc(&MyModule.slow_function/0)
 ```
 
 ## Benchee
