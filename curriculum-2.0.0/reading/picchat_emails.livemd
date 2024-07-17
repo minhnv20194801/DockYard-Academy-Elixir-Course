@@ -448,7 +448,7 @@ Oban also provides the [Oban.Testing.assert_enqueued/2](https://hexdocs.pm/oban/
 
 Here's a fantastic video that you may watch if you'd like to learn more about testing Oban.
 
-<!-- livebook:{"attrs":{"source":"YouTube.new(\"https://www.youtube.com/watch?v=PZ48omi0NKU&ab_channel=ElixirConf\")","title":"ElixirConf 2021 - Parker Selbert - Testing Oban Jobs From the Inside Out"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJZb3VUdWJlLm5ldyhcImh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9UFo0OG9taTBOS1UmYWJfY2hhbm5lbD1FbGl4aXJDb25mXCIpIiwidGl0bGUiOiJFbGl4aXJDb25mIDIwMjEgLSBQYXJrZXIgU2VsYmVydCAtIFRlc3RpbmcgT2JhbiBKb2JzIEZyb20gdGhlIEluc2lkZSBPdXQifQ","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 YouTube.new("https://www.youtube.com/watch?v=PZ48omi0NKU&ab_channel=ElixirConf")

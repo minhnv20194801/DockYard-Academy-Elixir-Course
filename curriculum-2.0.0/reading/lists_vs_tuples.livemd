@@ -188,7 +188,10 @@ Generally, `[head | tail]` is more idiomatic.
 </details>
 
 ```elixir
-
+list = Enum.to_list(1..50_000)
+:timer.tc(fn ->
+  [0 | list]
+end)
 ```
 
 In the Elixir cell below, use the `:timer.tc/1` function to time how long it takes to prepend a value to a **tuple** with `50000` elements.
@@ -204,7 +207,11 @@ tuple = Enum.to_list(1..50000) |> List.to_tuple()
 </details>
 
 ```elixir
-
+list = Enum.to_list(1..50_000)
+tuple = List.to_tuple(list)
+:timer.tc(fn ->
+  Tuple.insert_at(tuple, 0, 0)
+end)
 ```
 
 ## Accessing
@@ -270,7 +277,24 @@ to access the first element, and last element of a list with `5000` elements.
 Then do the same for tuples.
 
 ```elixir
+list = Enum.to_list(1..5_000)
+tuple = List.to_tuple(list)
 
+{first_index_list_time, _result} =
+  :timer.tc(fn -> Enum.at(list, 0) end)
+  |> IO.inspect()
+
+{last_index_list_time, _result} =
+  :timer.tc(fn -> Enum.at(list, 4999) end)
+  |> IO.inspect()
+
+{first_tuple_list_time, _result} =
+  :timer.tc(fn -> elem(tuple, 0) end)
+  |> IO.inspect()
+
+{last_tuple_list_time, _result} =
+  :timer.tc(fn -> elem(tuple, 4999) end)
+  |> IO.inspect()
 ```
 
 ## Concatenation
@@ -329,7 +353,15 @@ to concatenate a list with one element and a list with 5000 elements.
 Then try to concatenate a list with 5000 elements to a list with 1 element. Notice how it takes longer.
 
 ```elixir
+:timer.tc(fn ->
+  [0] ++ Enum.to_list(1..5000)
+end)
+|> IO.inspect()
 
+:timer.tc(fn ->
+  Enum.to_list(1..5000) ++ [0]
+end)
+|> IO.inspect()
 ```
 
 ## Updating (Replacing)
@@ -394,14 +426,36 @@ In the Elixir cell below, use `:timer.tc/1` to compare updating the **first** el
 and tuple with `5000` elements.
 
 ```elixir
+list = Enum.to_list(1..5000)
+tuple = List.to_tuple(list)
 
+:timer.tc(fn ->
+  List.replace_at(list, 0, 0)
+end)
+|> IO.inspect()
+
+:timer.tc(fn ->
+  put_elem(tuple, 0, 0)
+end)
+|> IO.inspect()
 ```
 
 In the Elixir cell below, use `:timer.tc/1` to compare updating the **last** element of a list and tuple
 with `5000` elements.
 
 ```elixir
+list = Enum.to_list(1..5000)
+tuple = List.to_tuple(list)
 
+:timer.tc(fn ->
+  List.replace_at(list, 4999, 0)
+end)
+|> IO.inspect()
+
+:timer.tc(fn ->
+  put_elem(tuple, 4999, 0)
+end)
+|> IO.inspect()
 ```
 
 ## Inserting
@@ -447,7 +501,18 @@ prove that inserting at the end of both a list and a tuple has $O(n)$ time compl
 In the Elixir cell below, use `:timer.tc` to insert to the end of a large `50000` element list and tuple.
 
 ```elixir
+list = Enum.to_list(1..50000)
+tuple = List.to_tuple(list)
 
+:timer.tc(fn ->
+  List.insert_at(list, 49999, 0)
+end)
+|> IO.inspect()
+
+:timer.tc(fn ->
+  Tuple.insert_at(tuple, 49999, 0)
+end)
+|> IO.inspect()
 ```
 
 ## Deleting
@@ -618,7 +683,7 @@ Below we use `b` and `b2` to represent rebinding the `b` variable.
 
 Operations with tuples and lists will have the following Big $O$ notation.
 
-<!-- livebook:{"attrs":{"source":"[\n  [operation: \"length\", tuple: \"O(1)\", list: \"O(n)\"],\n  [operation: \"prepend\", tuple: \"O(n)\", list: \"O(1)\"],\n  [operation: \"insert\", tuple: \"O(n)\", list: \"O(n*)\"],\n  [operation: \"access\", tuple: \"O(1)\", list: \"O(n*)\"],\n  [operation: \"update/replace\", tuple: \"O(n)\", list: \"O(n*)\"],\n  [operation: \"delete\", tuple: \"O(n)\", list: \"O(n*)\"],\n  [operation: \"concatenation\", tuple: \"O(n1 + n2)\", list: \"O(n1)\"]\n]\n|> Kino.DataTable.new()","title":"Lists and Tuples"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJbXG4gIFtvcGVyYXRpb246IFwibGVuZ3RoXCIsIHR1cGxlOiBcIk8oMSlcIiwgbGlzdDogXCJPKG4pXCJdLFxuICBbb3BlcmF0aW9uOiBcInByZXBlbmRcIiwgdHVwbGU6IFwiTyhuKVwiLCBsaXN0OiBcIk8oMSlcIl0sXG4gIFtvcGVyYXRpb246IFwiaW5zZXJ0XCIsIHR1cGxlOiBcIk8obilcIiwgbGlzdDogXCJPKG4qKVwiXSxcbiAgW29wZXJhdGlvbjogXCJhY2Nlc3NcIiwgdHVwbGU6IFwiTygxKVwiLCBsaXN0OiBcIk8obiopXCJdLFxuICBbb3BlcmF0aW9uOiBcInVwZGF0ZS9yZXBsYWNlXCIsIHR1cGxlOiBcIk8obilcIiwgbGlzdDogXCJPKG4qKVwiXSxcbiAgW29wZXJhdGlvbjogXCJkZWxldGVcIiwgdHVwbGU6IFwiTyhuKVwiLCBsaXN0OiBcIk8obiopXCJdLFxuICBbb3BlcmF0aW9uOiBcImNvbmNhdGVuYXRpb25cIiwgdHVwbGU6IFwiTyhuMSArIG4yKVwiLCBsaXN0OiBcIk8objEpXCJdXG5dXG58PiBLaW5vLkRhdGFUYWJsZS5uZXcoKSIsInRpdGxlIjoiTGlzdHMgYW5kIFR1cGxlcyJ9","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 [
