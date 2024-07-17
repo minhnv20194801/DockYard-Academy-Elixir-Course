@@ -87,6 +87,27 @@ defmodule PicChatWeb.MessageLiveTest do
       assert index_live |> element("#messages-#{message.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#messages-#{message.id}")
     end
+
+    test "infinite load 10 messages at a time", %{conn: conn} do
+      user = user_fixture()
+
+      messages =
+        Enum.map(1..20, fn n ->
+          message_fixture(user_id: user.id, content: "message-content-#{n}")
+        end)
+        |> Enum.reverse()
+
+      page_one_message = Enum.at(messages, 0)
+      page_two_message = Enum.at(messages, 10)
+
+      {:ok, index_live, html} = live(conn, ~p"/messages")
+
+      assert html =~ "Listing Messages"
+
+      assert html =~ page_one_message.content
+      refute html =~ page_two_message.content
+      assert render_hook(index_live, "load-more", %{}) =~ page_two_message.content
+    end
   end
 
   describe "Show" do

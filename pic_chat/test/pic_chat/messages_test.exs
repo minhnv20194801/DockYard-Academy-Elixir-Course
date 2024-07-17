@@ -14,7 +14,7 @@ defmodule PicChat.MessagesTest do
     test "list_messages/0 returns all messages" do
       user = user_fixture()
       message = message_fixture(user_id: user.id)
-      assert Messages.list_messages() == [message]
+      assert Messages.list_messages() == [Messages.get_message!(message.id)]
     end
 
     test "get_message!/1 returns the message with given id" do

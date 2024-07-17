@@ -17,9 +17,14 @@ defmodule PicChat.Messages do
       [%Message{}, ...]
 
   """
-  def list_messages do
+  def list_messages(opts \\ []) do
+    limit = Keyword.get(opts, :limit)
+    offset = Keyword.get(opts, :offset, 0)
+
     Message
-    |> from(order_by: [desc: :inserted_at, desc: :id])
+    |> from(order_by: [desc: :inserted_at, desc: :id], preload: [:user])
+    |> limit(^limit)
+    |> offset(^offset)
     |> Repo.all()
   end
 
@@ -38,7 +43,8 @@ defmodule PicChat.Messages do
 
   """
   def get_message!(id) do
-    from(m in Message, preload: [:user])
+    Message
+    |> from(preload: [:user])
     |> Repo.get!(id)
   end
 
