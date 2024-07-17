@@ -55,9 +55,33 @@ defmodule Fibonacci do
 
   ## Examples
 
-    iex> 
+  iex> Fibonacci.sequence(1)
+  [0]
+  iex> Fibonacci.sequence(2)
+  [0, 1]
+  iex> Fibonacci.sequence(10)
+  [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
   """
   def sequence(length) do
+    case length do
+      1 ->
+        [0]
+
+      2 ->
+        [0, 1]
+
+      _ ->
+        Enum.reduce(3..length, {[1, 0], {1, 0}}, fn _, acc ->
+          result = elem(acc, 0)
+          a = elem(elem(acc, 1), 0)
+          b = elem(elem(acc, 1), 1)
+          t = a + b
+          result = [t | result]
+          {result, {t, a}}
+        end)
+        |> elem(0)
+        |> Enum.reverse()
+    end
   end
 end
 ```
@@ -69,6 +93,25 @@ In the Elixir cell below, create a `FastFib` module. The `FastFib` module should
 ```elixir
 defmodule FastFib do
   def sequence(length) do
+    case length do
+      1 ->
+        [0]
+
+      2 ->
+        [0, 1]
+
+      _ ->
+        Enum.reduce(3..length, {[1, 0], {1, 0}}, fn _, acc ->
+          result = elem(acc, 0)
+          a = elem(elem(acc, 1), 0)
+          b = elem(elem(acc, 1), 1)
+          t = a + b
+          result = [t | result]
+          {result, {t, a}}
+        end)
+        |> elem(0)
+        |> Enum.reverse()
+    end
   end
 end
 ```
@@ -82,13 +125,13 @@ Benchee.run(
   },
   inputs: %{
     "1: small" => 10,
-    "2: medium" => 30
+    "2: medium" => 30,
     # Uncomment the following if your solution can handle it! 
     # Make sure to add a comma above.
-    # "3: large" => 100,
-    # "4: xl" => 1000,
-    # "6: 2xl" => 10000,
-    # "7: 3xl" => 100_000
+    "3: large" => 100,
+    "4: xl" => 1000,
+    "6: 2xl" => 10000,
+    "7: 3xl" => 100_000
   },
   memory_time: 2
 )
