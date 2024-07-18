@@ -82,7 +82,18 @@ end
 
 ```elixir
 defmodule CustomAssertion do
-  defmacro assert({operator, _meta, [left, right]}) do
+  defmacro assert({operator, meta, [left, right]}) do
+    {result, _binding} = Code.eval_quoted({operator, meta, [left, right]})
+
+    if result do
+      "Success"
+    else
+      """
+      Assertion with #{operator} failed.
+      left: #{left}
+      right: #{right}
+      """
+    end
   end
 end
 ```
