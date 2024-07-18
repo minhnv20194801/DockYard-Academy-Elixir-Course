@@ -727,6 +727,96 @@ Then remove that element to return the rest of the priority queue.
 PriorityQueue.remove(priority_queue)
 ```
 
+```elixir
+defmodule Heap do
+  def new do
+    []
+  end
+
+  def add([], new_element), do: [new_element]
+
+  def add(heap, new_element) do
+    heap = heap ++ [new_element]
+    last_index = length(heap) - 1
+
+    heap
+    |> swap_node(0, last_index)
+    |> heapify(0)
+  end
+
+  def next(heap) do
+    hd(heap)
+  end
+
+  def remove(heap) do
+    heap
+    |> swap_node(0, length(heap) - 1)
+    |> Enum.reverse()
+    |> tl()
+    |> Enum.reverse()
+    |> heapify(0)
+  end
+
+  defp heapify(heap, index) do
+    left_child = priority_of(Enum.at(heap, 2 * index + 1))
+    right_child = priority_of(Enum.at(heap, 2 * index + 2))
+    parent = priority_of(Enum.at(heap, index))
+
+    smallest_index =
+      cond do
+        left_child && left_child < parent ->
+          if right_child && left_child < right_child do
+            2 * index + 1
+          else
+            2 * index + 2
+          end
+
+        right_child && right_child < parent ->
+          2 * index + 2
+
+        true ->
+          index
+      end
+
+    if smallest_index != index do
+      heap
+      |> swap_node(index, smallest_index)
+      |> heapify(smallest_index)
+    else
+      heap
+    end
+  end
+
+  defp swap_node(heap, index_node_1, index_node_2) do
+    a = Enum.at(heap, index_node_1)
+
+    heap
+    |> List.replace_at(index_node_1, Enum.at(heap, index_node_2))
+    |> List.replace_at(index_node_2, a)
+  end
+
+  defp priority_of(element) do
+    element && elem(element, 1)
+  end
+end
+
+priority_queue =
+  Heap.new()
+  |> Heap.add({"minor illness", 4})
+  |> Heap.add({"moderate sprain", 2})
+  |> Heap.add({"severe injury", 3})
+  |> Heap.add({"critical injury", 1})
+
+IO.inspect(priority_queue)
+
+Heap.remove(priority_queue)
+|> IO.inspect()
+
+priority_queue
+|> Heap.add({"a scratch that is not even a scratch", 0})
+|> IO.inspect()
+```
+
 ## Further Reading
 
 Consider the following resource(s) to deepen your understanding of the topic.
