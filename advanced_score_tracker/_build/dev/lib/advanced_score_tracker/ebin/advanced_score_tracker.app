@@ -1,0 +1,13 @@
+{application,advanced_score_tracker,
+             [{config_mtime,1721277883},
+              {optional_applications,[]},
+              {applications,[kernel,stdlib,elixir,logger]},
+              {description,"advanced_score_tracker"},
+              {modules,['Elixir.AdvancedScoreTracker',
+                        'Elixir.AdvancedScoreTracker.Application',
+                        'Elixir.Games','Elixir.Games.GuessingGame',
+                        'Elixir.Games.RockPaperScissors',
+                        'Elixir.Games.ScoreTracker','Elixir.Games.Wordle']},
+              {registered,[]},
+              {vsn,"0.1.0"},
+              {mod,{'Elixir.AdvancedScoreTracker.Application',[]}}]}.
