@@ -5,8 +5,15 @@ Mix.install([
   {:jason, "~> 1.4"},
   {:kino, "~> 0.9", override: true},
   {:youtube, github: "brooklinjazz/youtube"},
-  {:hidden_cell, github: "brooklinjazz/hidden_cell"}
+  {:hidden_cell, github: "brooklinjazz/hidden_cell"},
+  {:mutex, "~> 1.3"},
+  {:benchee, "~> 1.1"}
 ])
+
+children = [
+  {Mutex, name: MyMutex}
+]
+{:ok, _pid} = Supervisor.start_link(children, strategy: :one_for_one)
 ```
 
 ## Navigation
@@ -131,11 +138,12 @@ Try changing the `:key` and `value` to see that the `:ets` table will store any 
 However, the `:ets` table will only store one value for a given key.
 
 ```elixir
-:ets.insert(table, {:hello, "hi"})
+:ets.insert(table, {:key, "value 1"})
 ```
 
 ```elixir
 kw_list = :ets.lookup(table, :key)
+|> IO.inspect()
 
 value = kw_list[:key]
 ```
@@ -175,7 +183,11 @@ secret identities.
 ```
 
 ```elixir
+# :ets.new(:super_hero, [:named_table])
 
+:ets.insert(:super_hero, {"Spider Man", "Peter Parker"})
+
+:ets.lookup(:super_hero, "Spider Man")
 ```
 
 ## ETS Configuration
@@ -298,7 +310,17 @@ end)
 </details>
 
 ```elixir
+table =
+  :ets.new(:order_private_table, [:ordered_set, :private])
 
+table |> :ets.insert({"3", "Value 3"})
+
+table |> :ets.insert({"1", "Value 1"})
+table |> :ets.first() |> IO.inspect()
+
+# spawn(fn ->
+#   :ets.insert(table, {:key, "value"})
+# end)
 ```
 
 ## Race Conditions
@@ -336,16 +358,20 @@ table = :ets.new(:concurrent, [:public])
 
 increment_task1 =
   Task.async(fn ->
+    lock = Mutex.await(MyMutex, :count_key)
     [count: count] = :ets.lookup(table, :count)
     Process.sleep(100)
     :ets.insert(table, {:count, count + 1})
+    Mutex.release(MyMutex, lock)
   end)
 
 increment_task2 =
   Task.async(fn ->
+    lock = Mutex.await(MyMutex, :count_key)
     [count: count] = :ets.lookup(table, :count)
     Process.sleep(100)
     :ets.insert(table, {:count, count + 1})
+    Mutex.release(MyMutex, lock)
   end)
 
 Task.await(increment_task1)
@@ -393,7 +419,7 @@ defmodule SlowFib do
   def of(1), do: 1
 
   def of(n) do
-    IO.puts("Computing fib(#{n})")
+    # IO.puts("Computing fib(#{n})")
     of(n - 1) + of(n - 2)
   end
 end
@@ -403,7 +429,7 @@ SlowFib.of(10)
 
 We can improve performance by saving each input/output in a cache so we don't have to re-compute the same values over and over. You can think of this cache as a table of inputs and outputs. For each input, we store the computed output rather than re-performing the calculation.
 
-<!-- livebook:{"attrs":{"source":"defmodule Fib do\n  def get(n) do\n    sequence =\n      Stream.unfold({1, 1}, fn {a, b} ->\n        {a, {b, a + b}}\n      end)\n      |> Enum.take(n)\n\n    [0 | sequence]\n  end\nend\n\nFib.get(150)\n|> Enum.with_index()\n|> Enum.map(fn {value, index} -> %{input: index, output: value} end)\n|> Kino.DataTable.new()","title":"Fib Cache"},"chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJzb3VyY2UiOiJkZWZtb2R1bGUgRmliIGRvXG4gIGRlZiBnZXQobikgZG9cbiAgICBzZXF1ZW5jZSA9XG4gICAgICBTdHJlYW0udW5mb2xkKHsxLCAxfSwgZm4ge2EsIGJ9IC0+XG4gICAgICAgIHthLCB7YiwgYSArIGJ9fVxuICAgICAgZW5kKVxuICAgICAgfD4gRW51bS50YWtlKG4pXG5cbiAgICBbMCB8IHNlcXVlbmNlXVxuICBlbmRcbmVuZFxuXG5GaWIuZ2V0KDE1MClcbnw+IEVudW0ud2l0aF9pbmRleCgpXG58PiBFbnVtLm1hcChmbiB7dmFsdWUsIGluZGV4fSAtPiAle2lucHV0OiBpbmRleCwgb3V0cHV0OiB2YWx1ZX0gZW5kKVxufD4gS2luby5EYXRhVGFibGUubmV3KCkiLCJ0aXRsZSI6IkZpYiBDYWNoZSJ9","chunks":null,"kind":"Elixir.HiddenCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 defmodule Fib do
@@ -470,7 +496,7 @@ defmodule CachedFib do
     if cached_value do
       cached_value
     else
-      IO.puts("Computing fib(#{n})")
+      # IO.puts("Computing fib(#{n})")
       result = of(n - 1) + of(n - 2)
       AgentCache.set(:fib_cache, n, result)
       result
@@ -490,7 +516,14 @@ Depending on your computer, we recommend you don't use `SlowFib` with a value la
 However, `CachedFib` should handle larger numbers.
 
 ```elixir
-
+Benchee.run(%{
+  "SlowFib" => fn ->
+    SlowFib.of(30)
+  end,
+  "CachedFib" => fn ->
+    CachedFib.of(30)
+  end
+})
 ```
 
 ### Your Turn
@@ -537,6 +570,34 @@ end
 ```elixir
 defmodule GenServerCache do
   use GenServer
+
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, [], opts)
+  end
+
+  def get(pid, input) do
+    GenServer.call(pid, {:get, input})
+  end
+
+  def set(pid, input, output) do
+    GenServer.call(pid, {:set, input, output})
+  end
+
+  @impl true
+  def init(_init_arg) do
+    {:ok, %{}}
+  end
+
+  @impl true
+  def handle_cast({:put, input, output}, state) do
+    Map.put(state, input, output)
+    {:no_reply, state}
+  end
+
+  @impl true
+  def handle_call({:get, input}, _from, state) do
+    {:reply, Map.get(state, input), state}
+  end
 end
 ```
 
@@ -570,6 +631,20 @@ end
 
 ```elixir
 defmodule ETSCache do
+  def new(opts \\ []) do
+    :ets.new(:cache, opts)
+  end
+
+  def get(ref, input) do
+    case :ets.lookup(ref, input) do
+      [{_key, output}] -> output
+      _ -> nil
+    end
+  end
+
+  def set(ref, input, output) do
+    :ets.insert(ref, {input, output})
+  end
 end
 ```
 
