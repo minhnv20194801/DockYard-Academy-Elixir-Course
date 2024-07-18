@@ -93,6 +93,7 @@ defmodule Inventory do
       true
   """
   def new() do
+    :ets.new(:inventory, [])
   end
 
   @doc """
@@ -105,6 +106,10 @@ defmodule Inventory do
       0
   """
   def get_quantity(ref, item) do
+    case :ets.lookup(ref, item) do
+      [{_key, value}] -> value
+      _ -> 0
+    end
   end
 
   @doc """
@@ -118,6 +123,7 @@ defmodule Inventory do
       true
   """
   def store(ref, item, quantity) do
+    :ets.insert(ref, {item, get_quantity(ref, item) + quantity})
   end
 end
 ```
@@ -187,6 +193,7 @@ defmodule Warehouse do
       true
   """
   def new(opts \\ []) do
+    :ets.new(:warehouse, [:duplicate_bag])
   end
 
   @doc """
@@ -199,6 +206,7 @@ defmodule Warehouse do
       []
   """
   def get_boxes(ref, item) do
+    :ets.lookup(ref, item)
   end
 
   @doc """
@@ -212,6 +220,7 @@ defmodule Warehouse do
       true
   """
   def store(ref, item, quantity) do
+    :ets.insert(ref, {item, quantity})
   end
 end
 ```
