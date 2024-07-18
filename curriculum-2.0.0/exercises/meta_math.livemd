@@ -76,6 +76,7 @@ defmodule Math do
   true
   """
   def correct?(equation, player_answer) do
+    elem(Code.eval_string(equation), 0) == player_answer
   end
 end
 ```
